@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 @Entity
-@Table(name = "facultyAdvisor")
+@Table(name = "faculty_advisor")
 public class FacultyAdvisorEntity
 {
     @Id
