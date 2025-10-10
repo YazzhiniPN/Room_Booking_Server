@@ -9,7 +9,7 @@ public class ClassEntity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "ClassName",nullable = false,unique = true)
+    @Column(name = "Class_name",nullable = false,unique = true)
     private String className;
     @Column(name = "capacity",nullable = false)
     private int capacity;

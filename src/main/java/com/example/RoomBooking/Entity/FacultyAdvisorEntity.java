@@ -18,11 +18,12 @@ public class FacultyAdvisorEntity
     private String userId;
     @Column(nullable = false)
     private String password;
-    @OneToMany(mappedBy = "faculty_advisor")
+    @OneToMany(mappedBy = "facultyAdvisor")
     @Size(max = 2)
     private List<RepEntity> reps;
-    @OneToOne(mappedBy = "faculty_advisor")
-    private List<ClassEntity> classNames;
+    @OneToOne(mappedBy = "facultyAdvisor")
+    private ClassEntity classes;
+    //private List<ClassEntity> classNames;
 
     public Integer getId() {
         return id;
@@ -68,11 +69,11 @@ public class FacultyAdvisorEntity
         reps.add(rep);
     }
 
-    public List<ClassEntity> getClassNames() {
-        return classNames;
+    public ClassEntity getClasses() {
+        return classes;
     }
 
-    public void setClassNames(List<ClassEntity> classNames) {
-        this.classNames = classNames;
+    public void setClasses(ClassEntity classes) {
+        this.classes = classes;
     }
 }

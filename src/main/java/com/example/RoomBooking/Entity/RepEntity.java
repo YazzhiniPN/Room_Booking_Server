@@ -21,7 +21,7 @@ public class RepEntity
     private String password;
     @ManyToOne
     @JoinColumn(name = "faculty_advisor",nullable = false)
-    private FacultyAdvisorEntity faculty_Advisor;
+    private FacultyAdvisorEntity facultyAdvisor;
 
     public Integer getId() {
         return id;
@@ -71,11 +71,11 @@ public class RepEntity
         this.password = password;
     }
 
-    public FacultyAdvisorEntity getFaculty_Advisor() {
-        return faculty_Advisor;
+    public FacultyAdvisorEntity getFacultyAdvisor() {
+        return facultyAdvisor;
     }
 
-    public void setFaculty_Advisor(FacultyAdvisorEntity faculty_Advisor) {
-        this.faculty_Advisor = faculty_Advisor;
+    public void setFacultyAdvisor(FacultyAdvisorEntity facultyAdvisor) {
+        this.facultyAdvisor = facultyAdvisor;
     }
 }
