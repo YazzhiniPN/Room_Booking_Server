@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 @Entity
-@Table(name = "faculty_advisor")
+@Table(name = "faculty_advisors")
 public class FacultyAdvisorEntity
 {
     @Id
@@ -14,14 +14,14 @@ public class FacultyAdvisorEntity
     private Integer id;
     @Column(name="faculty_name",nullable = false)
     private String facultyName;
-    @Column(nullable = false,unique = true)
+    @Column(name="user_id",nullable = false,unique = true)
     private String userId;
     @Column(nullable = false)
     private String password;
     @OneToMany(mappedBy = "faculty_advisor")
     @Size(max = 2)
     private List<RepEntity> reps;
-    @OneToMany(mappedBy = "faculty_advisor")
+    @OneToOne(mappedBy = "faculty_advisor")
     private List<ClassEntity> classNames;
 
     public Integer getId() {

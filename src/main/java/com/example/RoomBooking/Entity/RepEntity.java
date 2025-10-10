@@ -3,13 +3,13 @@ package com.example.RoomBooking.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="rep")
+@Table(name="representatives")
 public class RepEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "rep_Name",nullable = false)
+    @Column(name = "rep_name",nullable = false)
     private String name;
     @Column(name = "class_name", nullable = false)
     private String className;
@@ -20,7 +20,7 @@ public class RepEntity
     @Column(nullable = false)
     private String password;
     @ManyToOne
-    @JoinColumn(name = "facultyAdvisor",nullable = false)
+    @JoinColumn(name = "faculty_advisor",nullable = false)
     private FacultyAdvisorEntity faculty_Advisor;
 
     public Integer getId() {

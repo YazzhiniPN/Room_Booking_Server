@@ -2,7 +2,6 @@ package com.example.RoomBooking.Entity;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 @Entity
 @Table(name = "classes")
 public class ClassEntity
@@ -14,9 +13,9 @@ public class ClassEntity
     private String className;
     @Column(name = "capacity",nullable = false)
     private int capacity;
-    @ManyToOne
-    @JoinColumn(name="facultyAdvisor")
-    private FacultyAdvisorEntity faculty_advisor;
+    @OneToOne
+    @JoinColumn(name="faculty_advisor")
+    private FacultyAdvisorEntity facultyAdvisor;
 
     public Integer getId() {
         return id;
@@ -42,12 +41,12 @@ public class ClassEntity
         this.capacity = capacity;
     }
 
-    public FacultyAdvisorEntity getFaculty_advisor() {
-        return faculty_advisor;
+    public FacultyAdvisorEntity getFacultyAdvisor() {
+        return facultyAdvisor;
     }
 
-    public void setFaculty_advisor(FacultyAdvisorEntity faculty_advisor) {
-        this.faculty_advisor = faculty_advisor;
+    public void setFacultyAdvisor(FacultyAdvisorEntity facultyAdvisor) {
+        this.facultyAdvisor = facultyAdvisor;
     }
 }
 

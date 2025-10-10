@@ -24,13 +24,13 @@ public class BookingsEntity {
     @JoinColumn(name = "rep_id")
     private RepEntity rep;
     @ManyToOne
-    @JoinColumn(name = "faculty_id")
+    @JoinColumn(name = "faculty_advisor")
     private FacultyAdvisorEntity facultyAdvisor;
     @ManyToOne
-    @JoinColumn(name = "class_id", nullable = false)
+    @JoinColumn(name = "classes", nullable = false)
     private ClassEntity classEntity;
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "room", nullable = false)
     private RoomDatabaseEntity room;
     @Column(nullable = false)
     private int capacity;

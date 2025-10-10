@@ -3,7 +3,7 @@ package com.example.RoomBooking.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "room_database")
+@Table(name = "rooms")
 public class RoomDatabaseEntity
 {
     @Id
@@ -11,13 +11,13 @@ public class RoomDatabaseEntity
     private Integer id;
     @Column(name = "room_no",nullable = false)
     private String roomNo;
-    @Column(nullable = false)
+    @Column(name = "building_name", nullable = false)
     private String buildingName;
     @Column(nullable = false)
     private int capacity;
-    @Column(nullable = false)
+    @Column(name = "is_projector", nullable = false)
     private boolean isProjector;
-    @Column(nullable = false)
+    @Column(name = "is_classroom", nullable = false)
     private boolean isClassroom;
 
     public String getRoomNo() {
