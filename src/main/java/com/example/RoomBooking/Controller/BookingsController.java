@@ -18,10 +18,15 @@ public class BookingsController
         this.bookingsService=bookingsService;
     }
 
-    @GetMapping("{classId}")
+    @GetMapping("/rep/{classId}")
     public List<Bookings> getBookings(@PathVariable Long classId){
         return this.bookingsService.getBookings(classId);
     }
     /*@PostMapping("/faculty/{id}")
     public Bookings addBooking(@PathVariable Integer ClassId, @RequestBody )*/
+    @DeleteMapping("/rep/{bookingId}")
+    public String deleteBooking(@PathVariable Integer bookingId)
+    {
+        return this.bookingsService.deleteBooking(bookingId);
+    }
 }

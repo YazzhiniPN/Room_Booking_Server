@@ -21,9 +21,9 @@ public class RoomController
     {
         this.roomService=roomService;
     }
-    @PostMapping("/Available")
+    /*@PostMapping("/Available")
     public List<Rooms> getRooms(@RequestBody RoomRequest roomRequest)
     {
         return this.roomService.getRooms(roomRequest.getBuilding_name(),roomRequest.getDate(),roomRequest.getPeriods());
-    }
+    }*/
 }
