@@ -1,6 +1,7 @@
 package com.example.RoomBooking.Controller;
 
 import com.example.RoomBooking.Entity.Bookings;
+import com.example.RoomBooking.Payload.BookingRequest;
 import com.example.RoomBooking.Service.BookingsService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class BookingsController
     }
 
     @GetMapping("/rep/{classId}")
-    public List<Bookings> getBookings(@PathVariable Long classId){
+    public List<Bookings> getBookings(@PathVariable Integer classId){
         return this.bookingsService.getBookings(classId);
     }
     /*@PostMapping("/faculty/{id}")
@@ -28,5 +29,10 @@ public class BookingsController
     public String deleteBooking(@PathVariable Integer bookingId)
     {
         return this.bookingsService.deleteBooking(bookingId);
+    }
+    @PostMapping("/rep")
+    public Bookings addBookingRep(@RequestBody BookingRequest bookingRequest)
+    {
+        return this.bookingsService.addBookingRep(bookingRequest);
     }
 }

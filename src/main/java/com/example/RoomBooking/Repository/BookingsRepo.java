@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookingsRepo extends JpaRepository<Bookings,Integer> {
-    List<Bookings> findByClasses_Id(Long classId);
+    List<Bookings> findByClasses_ClassId(Integer classId);
 
     //void delete(Optional<Bookings> booking);
 

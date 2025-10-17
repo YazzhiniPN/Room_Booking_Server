@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface FacultyAdvisorRepo extends JpaRepository<FacultyAdvisor,Integer>
 {
-        public Optional<FacultyAdvisor> findByFaculty_id(Integer id);
+        public Optional<FacultyAdvisor> findByFacultyId(Integer id);
 }

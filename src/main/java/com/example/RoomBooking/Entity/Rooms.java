@@ -10,7 +10,8 @@ public class Rooms
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "room_id")
+    private Integer roomId;
     @Column(name = "room_no",nullable = false)
     private String roomNo;
     @Column(name = "building_name", nullable = false)
@@ -72,11 +73,11 @@ public class Rooms
         isClassroom = classroom;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getRoomId() {
+        return roomId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
     }
 }

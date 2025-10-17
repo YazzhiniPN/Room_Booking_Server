@@ -10,7 +10,8 @@ public class Classes
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "class_id")
+    private Integer classId;
     @Column(name = "class_name",nullable = false,unique = true)
     private String className;
     @Column(name = "capacity",nullable = false)
@@ -21,12 +22,12 @@ public class Classes
     @OneToMany(mappedBy = "classes")
     private List<Representative> representative;
 
-    public Integer getId() {
-        return id;
+    public Integer getClassId() {
+        return classId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setClassId(Integer classId) {
+        this.classId = classId;
     }
 
     public String getClassName() {

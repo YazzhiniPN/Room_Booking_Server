@@ -11,7 +11,7 @@ public class FacultyAdvisor
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="faculty_id",nullable = false,unique = true)
-    private Integer id;
+    private Integer facultyId;
     @Column(name="faculty_name",nullable = false)
     private String facultyName;
     @Column(name="user_id",nullable = false,unique = true)
@@ -25,12 +25,12 @@ public class FacultyAdvisor
     private Classes classes;
     //private List<ClassEntity> classNames;
     //private Classes className;
-    public Integer getId() {
-        return id;
+    public Integer getFacultyId() {
+        return facultyId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setFacultyId(Integer facultyId) {
+        this.facultyId = facultyId;
     }
 
     public String getFacultyName() {
