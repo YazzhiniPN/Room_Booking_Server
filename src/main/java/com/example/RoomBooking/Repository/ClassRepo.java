@@ -1,8 +1,15 @@
 package com.example.RoomBooking.Repository;
 
-import com.example.RoomBooking.Entity.ClassEntity;
+import com.example.RoomBooking.Entity.Classes;
+import com.example.RoomBooking.Entity.Rooms;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ClassRepo extends JpaRepository<ClassEntity,Integer>
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
+
+public interface ClassRepo extends JpaRepository<Classes,Integer>
 {
+
+
 }

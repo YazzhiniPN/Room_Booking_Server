@@ -1,9 +1,11 @@
 package com.example.RoomBooking.Repository;
 
-import com.example.RoomBooking.Entity.FacultyAdvisorEntity;
+import com.example.RoomBooking.Entity.FacultyAdvisor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FacultyAdvisorRepo extends JpaRepository<FacultyAdvisorEntity,Integer>
-{
+import java.util.Optional;
 
+public interface FacultyAdvisorRepo extends JpaRepository<FacultyAdvisor,Integer>
+{
+        public Optional<FacultyAdvisor> findByFaculty_id(Integer id);
 }

@@ -1,13 +1,15 @@
 package com.example.RoomBooking.Service;
 
 
-import com.example.RoomBooking.Entity.BookingsEntity;
-import com.example.RoomBooking.Entity.FacultyAdvisorEntity;
-import com.example.RoomBooking.Entity.RepEntity;
+import com.example.RoomBooking.Entity.Bookings;
+import com.example.RoomBooking.Entity.FacultyAdvisor;
+import com.example.RoomBooking.Entity.Representative;
 import com.example.RoomBooking.Repository.FacultyAdvisorRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class FacultyAdvisorService
@@ -18,38 +20,52 @@ public class FacultyAdvisorService
     {
         this.facultyAdvisorRepo=facultyAdvisorRepo;
     }
-    public FacultyAdvisorEntity addFacultyAdvisor(FacultyAdvisorEntity facultyAdvisor)
+    public com.example.RoomBooking.Entity.FacultyAdvisor addFacultyAdvisor(com.example.RoomBooking.Entity.FacultyAdvisor facultyAdvisor)
     {
         return facultyAdvisorRepo.save(facultyAdvisor);
     }
-    public FacultyAdvisorEntity updateFacultyAdvisorName(Integer id, String facultyName)
+    public com.example.RoomBooking.Entity.FacultyAdvisor updateFacultyAdvisorName(Integer id, String facultyName)
     {
-        FacultyAdvisorEntity facultyAdvisor = facultyAdvisorRepo.findById(id).orElse(null);
+        com.example.RoomBooking.Entity.FacultyAdvisor facultyAdvisor = facultyAdvisorRepo.findById(id).orElse(null);
         facultyAdvisor.setFacultyName(facultyName);
         return facultyAdvisorRepo.save(facultyAdvisor);
     }
-    public FacultyAdvisorEntity updateUserId(Integer id, String userId)
+    public com.example.RoomBooking.Entity.FacultyAdvisor updateUserId(Integer id, String userId)
     {
-        FacultyAdvisorEntity facultyAdvisor = facultyAdvisorRepo.findById(id).orElse(null);
+        com.example.RoomBooking.Entity.FacultyAdvisor facultyAdvisor = facultyAdvisorRepo.findById(id).orElse(null);
         facultyAdvisor.setUserId(userId);
         return facultyAdvisorRepo.save(facultyAdvisor);
     }
-    public FacultyAdvisorEntity updatePassword(Integer id, String password)
+    public com.example.RoomBooking.Entity.FacultyAdvisor updatePassword(Integer id, String password)
     {
-        FacultyAdvisorEntity facultyAdvisor = facultyAdvisorRepo.findById(id).orElse(null);
-        facultyAdvisor.setFacultyName(password);
+        com.example.RoomBooking.Entity.FacultyAdvisor facultyAdvisor = facultyAdvisorRepo.findById(id).orElse(null);
+        facultyAdvisor.setPassword(password);
         return facultyAdvisorRepo.save(facultyAdvisor);
     }
-    public FacultyAdvisorEntity updateRep(Integer id, RepEntity rep)
-    {
-        FacultyAdvisorEntity facultyAdvisor = facultyAdvisorRepo.findById(id).orElse(null);
-        facultyAdvisor.setRep(rep);
+    public FacultyAdvisor updateRep(Integer id, Representative rep) {
+        FacultyAdvisor facultyAdvisor = facultyAdvisorRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Faculty Advisor not found with ID: " + id));
+        if (facultyAdvisor.getReps() == null) {
+            facultyAdvisor.setReps(new ArrayList<>());
+        }
+        if (facultyAdvisor.getReps().size() >= 2) {
+            throw new IllegalStateException("Only two reps can be added");
+        }
+        rep.setFacultyAdvisor(facultyAdvisor);
+        facultyAdvisor.getReps().add(rep);
         return facultyAdvisorRepo.save(facultyAdvisor);
     }
-    public BookingsEntity bookClassroom(BookingsEntity newBooking)
+
+    public FacultyAdvisor getFacultyDetails(Integer id)
+    {
+        return this.facultyAdvisorRepo.findByFaculty_id(id).orElseThrow(()->new EntityNotFoundException("Faculty with id "+id +" not found"));
+    }
+    /*public Bookings bookClassroom(Bookings newBooking)
     {
         //calls the function in BookingService class
 
     }
+   
+     */
 
 }

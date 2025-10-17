@@ -2,11 +2,12 @@ package com.example.RoomBooking.Entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "bookings")
-public class BookingsEntity {
+public class Bookings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,20 +19,20 @@ public class BookingsEntity {
             name = "periods_booked",
             joinColumns = @JoinColumn(name = "booking_id")
     )
-    @Column(name = "period", nullable = false)
+    @Column(name = "periods", nullable = false)
     private Set<Integer> periods;
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "rep_id")
-    private RepEntity rep;
+    private Representative rep;
     @ManyToOne
     @JoinColumn(name = "faculty_advisor")
-    private FacultyAdvisorEntity facultyAdvisor;
-    @ManyToOne
-    @JoinColumn(name = "classes", nullable = false)
-    private ClassEntity classEntity;
+    private FacultyAdvisor facultyAdvisor;*/
+    @ManyToMany
+    @JoinTable(name = "bookings_classes",joinColumns = @JoinColumn(name = "booking_id"),inverseJoinColumns = @JoinColumn(name = "class_id"))
+    private List<Classes> classes;
     @ManyToOne
     @JoinColumn(name = "room", nullable = false)
-    private RoomDatabaseEntity room;
+    private Rooms room;
     @Column(nullable = false)
     private int capacity;
 
@@ -41,14 +42,6 @@ public class BookingsEntity {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public FacultyAdvisorEntity getFacultyAdvisor() {
-        return facultyAdvisor;
-    }
-
-    public void setFacultyAdvisor(FacultyAdvisorEntity facultyAdvisor) {
-        this.facultyAdvisor = facultyAdvisor;
     }
 
     public LocalDate getDate() {
@@ -67,27 +60,27 @@ public class BookingsEntity {
         this.periods = periods;
     }
 
-    public RepEntity getRep() {
-        return rep;
+    /*public Representative getRep() {
+        return repr;
     }
 
-    public void setRep(RepEntity rep) {
+    public void setRep(Representative rep) {
         this.rep = rep;
     }
 
-    public ClassEntity getClassEntity() {
-        return classEntity;
+    public FacultyAdvisor getFacultyAdvisor() {
+        return facultyAdvisor;
     }
 
-    public void setClassEntity(ClassEntity classEntity) {
-        this.classEntity = classEntity;
-    }
+    public void setFacultyAdvisor(FacultyAdvisor facultyAdvisor) {
+        this.facultyAdvisor = facultyAdvisor;
+    }*/
 
-    public RoomDatabaseEntity getRoom() {
+    public Rooms getRoom() {
         return room;
     }
 
-    public void setRoom(RoomDatabaseEntity room) {
+    public void setRoom(Rooms room) {
         this.room = room;
     }
 
@@ -97,5 +90,13 @@ public class BookingsEntity {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public List<Classes> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<Classes> classes) {
+        this.classes = classes;
     }
 }

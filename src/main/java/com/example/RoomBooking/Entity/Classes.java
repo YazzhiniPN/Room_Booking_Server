@@ -2,20 +2,24 @@ package com.example.RoomBooking.Entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "classes")
-public class ClassEntity
+public class Classes
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "Class_name",nullable = false,unique = true)
+    @Column(name = "class_name",nullable = false,unique = true)
     private String className;
     @Column(name = "capacity",nullable = false)
     private int capacity;
     @OneToOne
     @JoinColumn(name="faculty_advisor")
-    private FacultyAdvisorEntity facultyAdvisor;
+    private FacultyAdvisor facultyAdvisor;
+    @OneToMany(mappedBy = "classes")
+    private List<Representative> representative;
 
     public Integer getId() {
         return id;
@@ -41,12 +45,20 @@ public class ClassEntity
         this.capacity = capacity;
     }
 
-    public FacultyAdvisorEntity getFacultyAdvisor() {
+    public FacultyAdvisor getFacultyAdvisor() {
         return facultyAdvisor;
     }
 
-    public void setFacultyAdvisor(FacultyAdvisorEntity facultyAdvisor) {
+    public void setFacultyAdvisor(FacultyAdvisor facultyAdvisor) {
         this.facultyAdvisor = facultyAdvisor;
+    }
+
+    public List<Representative> getRepresentative() {
+        return representative;
+    }
+
+    public void setRepresentative(List<Representative> representative) {
+        this.representative = representative;
     }
 }
 

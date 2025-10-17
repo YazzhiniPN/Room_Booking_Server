@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 @Entity
 @Table(name = "faculty_advisors")
-public class FacultyAdvisorEntity
+public class FacultyAdvisor
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +20,11 @@ public class FacultyAdvisorEntity
     private String password;
     @OneToMany(mappedBy = "facultyAdvisor")
     @Size(max = 2)
-    private List<RepEntity> reps;
+    private List<Representative> reps;
     @OneToOne(mappedBy = "facultyAdvisor")
-    private ClassEntity classes;
+    private Classes classes;
     //private List<ClassEntity> classNames;
-
+    //private Classes className;
     public Integer getId() {
         return id;
     }
@@ -57,23 +57,31 @@ public class FacultyAdvisorEntity
         this.password = password;
     }
 
-    public List<RepEntity> getReps() {
+    public List<Representative> getReps() {
         return reps;
     }
 
-    public void setReps(List<RepEntity> reps) {
+    public void setReps(List<Representative> reps) {
         this.reps = reps;
     }
-    public void setRep(RepEntity rep)
+    public void setRep(Representative rep)
     {
         reps.add(rep);
     }
 
-    public ClassEntity getClasses() {
+    public Classes getClasses() {
         return classes;
     }
 
-    public void setClasses(ClassEntity classes) {
+    public void setClasses(Classes classes) {
         this.classes = classes;
     }
+
+    /*public Classes getClassName() {
+        return className;
+    }
+
+    public void setClassName(Classes className) {
+        this.className = className;
+    }*/
 }

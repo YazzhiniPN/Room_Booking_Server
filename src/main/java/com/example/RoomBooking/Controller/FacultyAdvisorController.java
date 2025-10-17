@@ -1,8 +1,8 @@
 package com.example.RoomBooking.Controller;
 
-import com.example.RoomBooking.Entity.BookingsEntity;
-import com.example.RoomBooking.Entity.FacultyAdvisorEntity;
-import com.example.RoomBooking.Entity.RepEntity;
+import com.example.RoomBooking.Entity.Bookings;
+import com.example.RoomBooking.Entity.FacultyAdvisor;
+import com.example.RoomBooking.Entity.Representative;
 import com.example.RoomBooking.Service.FacultyAdvisorService;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,36 +10,41 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("RoomBooking/facultyAdvisor")
 public class FacultyAdvisorController
 {
-    private FacultyAdvisorService facultyAdvisorService;
-    public FacultyAdvisorController(FacultyAdvisorService facultyAdvisorService)
+    private FacultyAdvisorService facultyAdvisor;
+    public FacultyAdvisorController(FacultyAdvisorService facultyAdvisor)
     {
-        this.facultyAdvisorService=facultyAdvisorService;
+        this.facultyAdvisor = facultyAdvisor;
     }
     @PostMapping
-    public FacultyAdvisorEntity addFacultyAdvisor(@RequestBody FacultyAdvisorEntity facultyAdvisor)
+    public com.example.RoomBooking.Entity.FacultyAdvisor addFacultyAdvisor(@RequestBody com.example.RoomBooking.Entity.FacultyAdvisor facultyAdvisor)
     {
-        return this.facultyAdvisorService.addFacultyAdvisor(facultyAdvisor);
+        return this.facultyAdvisor.addFacultyAdvisor(facultyAdvisor);
     }
-    @PutMapping("/{id}")
-    public FacultyAdvisorEntity updateFacultyAdvisorname(@PathVariable Integer id, @RequestBody String facultyName)
+    @PutMapping("/{id}/updateName")
+    public com.example.RoomBooking.Entity.FacultyAdvisor updateFacultyAdvisorname(@PathVariable Integer id, @RequestParam String facultyName)
     {
-        return this.facultyAdvisorService.updateFacultyAdvisorName(id,facultyName);
+        return this.facultyAdvisor.updateFacultyAdvisorName(id,facultyName);
     }
-    @PutMapping("/{id}")
-    public FacultyAdvisorEntity updateUserId(Integer id, String userId)
+    @GetMapping({"/{id}"})
+    public FacultyAdvisor getFacultyDetails(@PathVariable Integer id)
     {
-        return this.facultyAdvisorService.updateUserId(id,userId);
+        return this.facultyAdvisor.getFacultyDetails(id);
     }
-    @PutMapping("/{id}")
-    public FacultyAdvisorEntity updatePassword(Integer id, String password)
+    @PutMapping("/{id}/updateUserId")
+    public com.example.RoomBooking.Entity.FacultyAdvisor updateUserId(Integer id, String userId)
     {
-        return this.facultyAdvisorService.updatePassword(id,password);
+        return this.facultyAdvisor.updateUserId(id,userId);
     }
-    @PutMapping("/{id}")
-    public FacultyAdvisorEntity updateRep(Integer id, RepEntity rep)
+    @PutMapping("/{id}/updatePassword")
+    public com.example.RoomBooking.Entity.FacultyAdvisor updatePassword(Integer id, String password)
     {
-        return this.facultyAdvisorService.updateRep(id,rep);
+        return this.facultyAdvisor.updatePassword(id,password);
+    }
+    @PutMapping("/{id}/updateRep")
+    public com.example.RoomBooking.Entity.FacultyAdvisor updateRep(Integer id, Representative rep)
+    {
+        return this.facultyAdvisor.updateRep(id,rep);
     }
 
-    public BookingsEntity bookClassroom(@RequestBody String userId, @RequestBody )
+    //public Bookings bookClassroom(@RequestBody String userId, @RequestBody)*/
 }

@@ -4,24 +4,27 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name="representatives")
-public class RepEntity
+public class Representative
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "rep_name",nullable = false)
     private String name;
-    @Column(name = "class_name", nullable = false)
-    private String className;
+    @ManyToOne
+    @JoinColumn(name = "class_name", nullable = false)
+    private Classes classes;
+    /*@Column(name = "class_name", nullable = false)
+    private String className;*/
     @Column(name = "roll_no", nullable = false, unique = true)
     private int rollNo;
-    @Column(nullable = false,unique = true)
+    @Column(name="user_id",nullable = false,unique = true)
     private String userId;
     @Column(nullable = false)
     private String password;
     @ManyToOne
     @JoinColumn(name = "faculty_advisor",nullable = false)
-    private FacultyAdvisorEntity facultyAdvisor;
+    private FacultyAdvisor facultyAdvisor;
 
     public Integer getId() {
         return id;
@@ -39,12 +42,12 @@ public class RepEntity
         this.name = name;
     }
 
-    public String getClassName() {
-        return className;
+    public Classes getClasses() {
+        return classes;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setClasses(Classes classes) {
+        this.classes = classes;
     }
 
     public int getRollNo() {
@@ -71,11 +74,11 @@ public class RepEntity
         this.password = password;
     }
 
-    public FacultyAdvisorEntity getFacultyAdvisor() {
+    public FacultyAdvisor getFacultyAdvisor() {
         return facultyAdvisor;
     }
 
-    public void setFacultyAdvisor(FacultyAdvisorEntity facultyAdvisor) {
+    public void setFacultyAdvisor(FacultyAdvisor facultyAdvisor) {
         this.facultyAdvisor = facultyAdvisor;
     }
 }

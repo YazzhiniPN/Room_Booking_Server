@@ -2,9 +2,11 @@ package com.example.RoomBooking.Entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "rooms")
-public class RoomDatabaseEntity
+public class Rooms
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +21,16 @@ public class RoomDatabaseEntity
     private boolean isProjector;
     @Column(name = "is_classroom", nullable = false)
     private boolean isClassroom;
+    @OneToMany(mappedBy = "room")
+    private List<Bookings> bookings;
+
+    public List<Bookings> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Bookings> bookings) {
+        this.bookings = bookings;
+    }
 
     public String getRoomNo() {
         return roomNo;

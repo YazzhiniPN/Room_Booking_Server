@@ -1,8 +1,10 @@
 package com.example.RoomBooking.Repository;
 
-import com.example.RoomBooking.Entity.BookingsEntity;
+import com.example.RoomBooking.Entity.Bookings;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BookingsRepo extends JpaRepository<BookingsEntity,Integer>
-{
+import java.util.List;
+
+public interface BookingsRepo extends JpaRepository<Bookings,Integer> {
+    List<Bookings> findByClasses_Id(Long classId);
 }
