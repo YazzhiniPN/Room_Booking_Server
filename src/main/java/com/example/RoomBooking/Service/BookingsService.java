@@ -92,17 +92,22 @@ public class BookingsService
             for (Bookings booking:bookingsList)
             {
                 Set<Integer> bookingPeriods=booking.getPeriods();
-                if(bookingPeriods.equals(requestPeriods))
+                for(Integer period: bookingPeriods)
                 {
-                    available=false;
+                    if(requestPeriods.contains(period))
+                    {
+                        available=false;
+                        break;
+                    }
                 }
-                else
-                {
-                    availableRooms.add(room);
-                    break;
-                }
+
+            }
+            if (available)
+            {
+                availableRooms.add(room);
             }
         }
+
         return availableRooms;
     }
 

@@ -47,6 +47,6 @@ public class BookingsController
     @GetMapping("/availability")
     public List<Rooms> availableRooms(@RequestBody AvailabityRequest availabityRequest)
     {
-
+        return this.bookingsService.availableRooms(availabityRequest);
     }
 }

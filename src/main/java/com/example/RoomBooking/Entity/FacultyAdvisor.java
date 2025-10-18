@@ -1,5 +1,6 @@
 package com.example.RoomBooking.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,10 +26,12 @@ public class FacultyAdvisor implements UserDetails
     private String password;
     @OneToMany(mappedBy = "facultyAdvisor")
     @Size(max = 2)
+    @JsonIgnore
     private List<Representative> reps;
     @OneToOne(mappedBy = "facultyAdvisor")
     private Classes classes;
     @OneToOne(mappedBy = "facultyAdvisor")
+    @JsonIgnore
     private Bookings bookings;
     //private List<ClassEntity> classNames;
     //private Classes className;

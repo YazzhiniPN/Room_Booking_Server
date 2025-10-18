@@ -21,6 +21,7 @@ public class Representative implements UserDetails
     private String name;
     @ManyToOne
     @JoinColumn(name = "class_name", nullable = false)
+    @JsonIgnore
     private Classes classes;
     /*@Column(name = "class_name", nullable = false)
     private String className;*/
