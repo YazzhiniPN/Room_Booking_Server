@@ -7,7 +7,7 @@ import com.example.RoomBooking.Service.FacultyAdvisorService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("RoomBooking/facultyAdvisor")
+@RequestMapping("/api/faculty")
 public class FacultyAdvisorController
 {
     private FacultyAdvisorService facultyAdvisor;
@@ -25,11 +25,11 @@ public class FacultyAdvisorController
     {
         return this.facultyAdvisor.updateFacultyAdvisorName(id,facultyName);
     }
-    @GetMapping({"/{id}"})
-    public FacultyAdvisor getFacultyDetails(@PathVariable Integer id)
-    {
-        return this.facultyAdvisor.getFacultyDetails(id);
-    }
+    //@GetMapping({"/{id}"})
+    //public FacultyAdvisor getFacultyDetails(@PathVariable Integer id)
+    //{
+    //    return this.facultyAdvisor.getFacultyDetails(id);
+    //}
     @PutMapping("/{id}/updateUserId")
     public com.example.RoomBooking.Entity.FacultyAdvisor updateUserId(Integer id, String userId)
     {

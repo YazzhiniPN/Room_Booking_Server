@@ -56,10 +56,10 @@ public class FacultyAdvisorService
         return facultyAdvisorRepo.save(facultyAdvisor);
     }
 
-    public FacultyAdvisor getFacultyDetails(Integer id)
-    {
-        return this.facultyAdvisorRepo.findByFacultyId(id).orElseThrow(()->new EntityNotFoundException("Faculty with id "+id +" not found"));
-    }
+    //public FacultyAdvisor getFacultyDetails(Integer id)
+    //{
+    //    return this.facultyAdvisorRepo.findByFacultyId(id).orElseThrow(()->new EntityNotFoundException("Faculty with id "+id +" not found"));
+    //}
     /*public Bookings bookClassroom(Bookings newBooking)
     {
         //calls the function in BookingService class

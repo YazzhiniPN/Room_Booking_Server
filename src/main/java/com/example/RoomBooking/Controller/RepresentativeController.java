@@ -4,7 +4,7 @@ import com.example.RoomBooking.Service.RepresentativeService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("RoomBooking/rep")
+@RequestMapping("/api/rep")
 public class RepresentativeController
 {
     private RepresentativeService repService;

@@ -1,7 +1,4 @@
-package com.example.RoomBooking.Payload;
-
-import com.example.RoomBooking.Entity.Classes;
-import com.example.RoomBooking.Entity.Rooms;
+package com.example.RoomBooking.payload;
 
 import java.time.LocalDate;
 import java.util.List;

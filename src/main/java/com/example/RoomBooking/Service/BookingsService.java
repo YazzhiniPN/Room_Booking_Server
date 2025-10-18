@@ -3,7 +3,7 @@ package com.example.RoomBooking.Service;
 import com.example.RoomBooking.Entity.Bookings;
 import com.example.RoomBooking.Entity.Classes;
 import com.example.RoomBooking.Entity.Rooms;
-import com.example.RoomBooking.Payload.BookingRequest;
+import com.example.RoomBooking.payload.BookingRequest;
 import com.example.RoomBooking.Repository.BookingsRepo;
 import com.example.RoomBooking.Repository.ClassRepo;
 import com.example.RoomBooking.Repository.RoomDatabaseRepo;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -52,7 +51,7 @@ public class BookingsService
 
         List<Classes> classesList = this.classRepo.findAllById(bookingRequest.getClassIds());
 
-        Bookings booking=new Bookings();
+        Bookings booking = new Bookings();
         booking.setRoom(roomId);
         booking.setDate(bookingDate);
         booking.setClasses(classesList);
