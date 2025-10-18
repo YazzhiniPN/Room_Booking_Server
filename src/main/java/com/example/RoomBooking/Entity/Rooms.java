@@ -1,5 +1,6 @@
 package com.example.RoomBooking.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class Rooms
     @Column(name = "is_classroom", nullable = false)
     private boolean isClassroom;
     @OneToMany(mappedBy = "room")
+    @JsonIgnore
     private List<Bookings> bookings;
 
     public List<Bookings> getBookings() {

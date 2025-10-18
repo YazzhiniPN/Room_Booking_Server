@@ -1,5 +1,6 @@
 package com.example.RoomBooking.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,7 +33,9 @@ public class Representative implements UserDetails
     @ManyToOne
     @JoinColumn(name = "faculty_advisor",nullable = false)
     private FacultyAdvisor facultyAdvisor;
-
+    @OneToMany(mappedBy = "rep")
+    @JsonIgnore
+    private List<Bookings> bookings;
     public Integer getId() {
         return id;
     }
@@ -117,5 +120,13 @@ public class Representative implements UserDetails
 
     public void setFacultyAdvisor(FacultyAdvisor facultyAdvisor) {
         this.facultyAdvisor = facultyAdvisor;
+    }
+
+    public List<Bookings> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Bookings> bookings) {
+        this.bookings = bookings;
     }
 }

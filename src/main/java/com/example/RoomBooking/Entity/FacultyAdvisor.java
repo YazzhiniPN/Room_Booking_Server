@@ -28,10 +28,20 @@ public class FacultyAdvisor implements UserDetails
     private List<Representative> reps;
     @OneToOne(mappedBy = "facultyAdvisor")
     private Classes classes;
+    @OneToOne(mappedBy = "facultyAdvisor")
+    private Bookings bookings;
     //private List<ClassEntity> classNames;
     //private Classes className;
     public Integer getFacultyId() {
         return facultyId;
+    }
+
+    public Bookings getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(Bookings bookings) {
+        this.bookings = bookings;
     }
 
     public void setFacultyId(Integer facultyId) {

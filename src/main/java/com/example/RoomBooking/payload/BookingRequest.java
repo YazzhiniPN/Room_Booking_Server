@@ -11,6 +11,15 @@ public class BookingRequest
     private List<Integer> classIds;
     private int capacity;
     private Integer roomId;
+    private String repUserId;
+
+    public String getRepUserId() {
+        return repUserId;
+    }
+
+    public void setRepUserId(String repUserId) {
+        this.repUserId = repUserId;
+    }
 
     public LocalDate getDate() {
         return date;

@@ -21,12 +21,12 @@ public class Bookings {
     )
     @Column(name = "periods", nullable = false)
     private Set<Integer> periods;
-    /*@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "rep_id")
     private Representative rep;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "faculty_advisor")
-    private FacultyAdvisor facultyAdvisor;*/
+    private FacultyAdvisor facultyAdvisor;
     @ManyToMany
     @JoinTable(name = "bookings_classes",joinColumns = @JoinColumn(name = "booking_id"),inverseJoinColumns = @JoinColumn(name = "class_id"))
     private List<Classes> classes;
@@ -35,6 +35,14 @@ public class Bookings {
     private Rooms room;
     @Column(nullable = false)
     private int capacity;
+
+    public FacultyAdvisor getFacultyAdvisor() {
+        return facultyAdvisor;
+    }
+
+    public void setFacultyAdvisor(FacultyAdvisor facultyAdvisor) {
+        this.facultyAdvisor = facultyAdvisor;
+    }
 
     public Integer getId() {
         return id;
@@ -98,5 +106,13 @@ public class Bookings {
 
     public void setClasses(List<Classes> classes) {
         this.classes = classes;
+    }
+
+    public Representative getRep() {
+        return rep;
+    }
+
+    public void setRep(Representative rep) {
+        this.rep = rep;
     }
 }

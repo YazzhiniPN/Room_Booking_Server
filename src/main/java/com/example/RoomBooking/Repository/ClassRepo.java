@@ -12,5 +12,6 @@ import java.util.Set;
 public interface ClassRepo extends JpaRepository<Classes,Integer>
 {
     public List<Classes> findAllByClassId(Integer ClassId);
+    public Optional<Classes> findByClassId(Integer ClassId);
 
 }
