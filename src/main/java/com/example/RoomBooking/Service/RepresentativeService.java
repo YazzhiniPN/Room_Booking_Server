@@ -1,7 +1,11 @@
 package com.example.RoomBooking.Service;
 
+import com.example.RoomBooking.Entity.Representative;
 import com.example.RoomBooking.Repository.RepRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class RepresentativeService
@@ -45,5 +49,8 @@ public class RepresentativeService
         newRep.(className);
         return repRepo.save(newRep);
     }*/
-
+    public Representative getRepDetails(String id)
+    {
+        return this.repRepo.findByUserId(id).orElseThrow(()->new EntityNotFoundException("Rep not found"));
+    }
 }

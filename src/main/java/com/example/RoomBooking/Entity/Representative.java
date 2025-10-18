@@ -1,6 +1,7 @@
 package com.example.RoomBooking.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +22,7 @@ public class Representative implements UserDetails
     private String name;
     @ManyToOne
     @JoinColumn(name = "class_name", nullable = false)
-    @JsonIgnore
+    @JsonIgnoreProperties({"bookings"})
     private Classes classes;
     /*@Column(name = "class_name", nullable = false)
     private String className;*/
@@ -33,6 +34,7 @@ public class Representative implements UserDetails
     private String password;
     @ManyToOne
     @JoinColumn(name = "faculty_advisor",nullable = false)
+    @JsonIgnoreProperties({"representative"})
     private FacultyAdvisor facultyAdvisor;
     @OneToMany(mappedBy = "rep")
     @JsonIgnore

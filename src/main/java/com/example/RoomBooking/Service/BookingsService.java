@@ -84,11 +84,11 @@ public class BookingsService
         String buildingName=availabityRequest.getBuildingName();
         Set<Integer> requestPeriods=availabityRequest.getPeriods();
         List<Rooms> roomsList=this.roomDatabaseRepo.findByBuildingName(buildingName);
-        List<Rooms> availableRooms=new ArrayList<>();
+
         for(Rooms room: roomsList)
         {
             List<Bookings> bookingsList=bookingsRepo.findByRoomAndDate(room,date);
-            boolean available=true;
+            List<Bookings> roombookings=new ArrayList<>();
             for (Bookings booking:bookingsList)
             {
                 Set<Integer> bookingPeriods=booking.getPeriods();
@@ -96,19 +96,15 @@ public class BookingsService
                 {
                     if(requestPeriods.contains(period))
                     {
-                        available=false;
+                        roombookings.add(booking);
                         break;
                     }
                 }
-
             }
-            if (available)
-            {
-                availableRooms.add(room);
-            }
+            room.setBookings(roombookings);
         }
 
-        return availableRooms;
+        return roomsList;
     }
 
 }

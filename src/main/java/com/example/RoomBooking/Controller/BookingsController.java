@@ -44,7 +44,7 @@ public class BookingsController
         return this.bookingsService.addBookingFaculty(bookingRequestFaculty);
     }
 
-    @GetMapping("/availability")
+    @PostMapping("/availability")
     public List<Rooms> availableRooms(@RequestBody AvailabityRequest availabityRequest)
     {
         return this.bookingsService.availableRooms(availabityRequest);

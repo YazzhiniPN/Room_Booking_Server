@@ -1,5 +1,7 @@
 package com.example.RoomBooking.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -24,14 +26,19 @@ public class Bookings {
     @ManyToOne
     @JoinColumn(name = "rep_id")
     private Representative rep;
+
     @OneToOne
     @JoinColumn(name = "faculty_advisor")
+    @JsonIgnoreProperties({"classes","representative","password"})
     private FacultyAdvisor facultyAdvisor;
     @ManyToMany
     @JoinTable(name = "bookings_classes",joinColumns = @JoinColumn(name = "booking_id"),inverseJoinColumns = @JoinColumn(name = "class_id"))
+    @JsonIgnoreProperties({"representative","facultyAdvisor"})
     private List<Classes> classes;
     @ManyToOne
     @JoinColumn(name = "room", nullable = false)
+    //@JsonIgnoreProperties({"bookings"})
+    @JsonBackReference
     private Rooms room;
     @Column(nullable = false)
     private int capacity;

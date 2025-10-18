@@ -1,5 +1,7 @@
 package com.example.RoomBooking.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -20,6 +22,8 @@ public class Classes
     @JoinColumn(name="faculty_advisor")
     private FacultyAdvisor facultyAdvisor;
     @OneToMany(mappedBy = "classes")
+    //@JsonIgnoreProperties
+    @JsonIgnore
     private List<Representative> representative;
 
     public Integer getClassId() {
