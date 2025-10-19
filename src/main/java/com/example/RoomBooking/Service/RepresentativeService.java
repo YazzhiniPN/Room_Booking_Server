@@ -15,10 +15,10 @@ public class RepresentativeService
     {
         this.repRepo=repRepo;
     }
-    public com.example.RoomBooking.Entity.Representative addRep(com.example.RoomBooking.Entity.Representative rep)
+    /*public com.example.RoomBooking.Entity.Representative addRep(com.example.RoomBooking.Entity.Representative rep)
     {
         return repRepo.save(rep);
-    }
+    }*/
     public com.example.RoomBooking.Entity.Representative updateRepName(Integer id, String name)
     {
         com.example.RoomBooking.Entity.Representative newRep=repRepo.findById(id).orElse(null);

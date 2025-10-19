@@ -21,11 +21,11 @@ public class RepresentativeController
         this.repService=repService;
         this.authenticationManager=authenticationManager;
     }
-    @PostMapping
+    /*@PostMapping
     public com.example.RoomBooking.Entity.Representative addRep(@RequestBody com.example.RoomBooking.Entity.Representative rep)
     {
         return this.repService.addRep(rep);
-    }
+    }*/
     @PutMapping("/{id}")
     public com.example.RoomBooking.Entity.Representative updateRepName(@PathVariable Integer id,@RequestBody String name)
     {
