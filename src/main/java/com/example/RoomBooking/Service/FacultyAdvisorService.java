@@ -62,12 +62,10 @@ public class FacultyAdvisorService
         if (facultyAdvisor.getReps().size() >= 2) {
             throw new IllegalStateException("Only two reps can be added");
         }
-        Classes classes=this.classRepo.findByClassId(repDetails.getClassId()).orElseThrow(()->new EntityNotFoundException("Class not found"));
+        Classes classes=this.classRepo.findByClassId(facultyAdvisor.getClasses().getClassId()).orElseThrow(()->new EntityNotFoundException("Class not found"));
         String encodedPassword = passwordEncoder.encode(repDetails.getPassword());
 
-        if(!(classes.getFacultyAdvisor().getUserId().equals(facultyAdvisor.getUserId()))){
-            throw new RuntimeException("Faculty advisor can add reps only to their respective classrooms");
-        }
+
 
         Representative rep=new Representative();
         rep.setPassword(encodedPassword);

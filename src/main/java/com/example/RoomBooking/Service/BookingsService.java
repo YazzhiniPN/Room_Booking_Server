@@ -98,11 +98,18 @@ public class BookingsService
         Classes classes = this.classRepo.findByClassId(bookingRequestFaculty.getClassId())
                 .orElseThrow(() -> new EntityNotFoundException("Class not found"));
         FacultyAdvisor facultyAdvisor=this.facultyAdvisorRepo.findByUserId(bookingRequestFaculty.getUserId()).orElseThrow(()->new EntityNotFoundException("Faculty not found"));
+        List<Bookings> facultyBookings=bookingsRepo.findByFacultyAdvisor(facultyAdvisor);
+        if(!facultyBookings.isEmpty())
+        {
+            throw new RuntimeException("Only one class can be booked by a faculty advisor");
+        }
         Bookings booking=new Bookings();
         booking.setPeriods(bookingRequestFaculty.getPeriods());
         booking.setRoom(room);
         booking.setClasses(List.of(classes));
         booking.setFacultyAdvisor(facultyAdvisor);
+        booking.setDate(LocalDate.now());
+        booking.setCapacity(room.getCapacity());
         return bookingsRepo.save(booking);
     }
     public List<Rooms> availableRooms(AvailabityRequest availabityRequest)
@@ -150,5 +157,10 @@ public class BookingsService
         }
         return permanentClassrooms;
     }
-
+    public String deleteBookingFaculty(Integer bookingId)
+    {
+        Bookings booking=this.bookingsRepo.findById(bookingId).orElseThrow(()->new EntityNotFoundException("No bookings found with the id "+bookingId));
+        bookingsRepo.delete(booking);
+        return ("Booking with id "+bookingId+" has been deleted successfully");
+    }
 }

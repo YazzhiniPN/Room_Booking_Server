@@ -1,6 +1,7 @@
 package com.example.RoomBooking.Repository;
 
 import com.example.RoomBooking.Entity.Bookings;
+import com.example.RoomBooking.Entity.FacultyAdvisor;
 import com.example.RoomBooking.Entity.Rooms;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,5 @@ public interface BookingsRepo extends JpaRepository<Bookings,Integer> {
 
     //void delete(Optional<Bookings> booking);
     List<Bookings> findByRoomAndDate(Rooms room, LocalDate date);
+    List<Bookings> findByFacultyAdvisor(FacultyAdvisor facultyAdvisor);
 }

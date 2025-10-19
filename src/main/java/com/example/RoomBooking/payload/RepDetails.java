@@ -6,7 +6,7 @@ public class RepDetails
     private int rollNo;
     private String userId;
     private String password;
-    private Integer classId;
+
 
     public String getName() {
         return name;
@@ -38,13 +38,5 @@ public class RepDetails
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Integer getClassId() {
-        return classId;
-    }
-
-    public void setClassId(Integer classId) {
-        this.classId = classId;
     }
 }

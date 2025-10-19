@@ -52,5 +52,9 @@ public class BookingsController
     {
         return this.bookingsService.permanentRooms(building);
     }
-
+    @DeleteMapping("/faculty/{bookingId}")
+    public String deleteBookingFaculty(@PathVariable Integer bookingId)
+    {
+        return this.bookingsService.deleteBookingFaculty(bookingId);
+    }
 }
