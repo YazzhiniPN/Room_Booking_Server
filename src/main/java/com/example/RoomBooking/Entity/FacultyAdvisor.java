@@ -1,6 +1,7 @@
 package com.example.RoomBooking.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 @Entity
 @Table(name = "faculty_advisors")
+@JsonIgnoreProperties({"classes"})
 public class FacultyAdvisor implements UserDetails
 {
     @Id

@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/booking/faculty/**").hasRole("FACULTY_ADVISOR")
-                        .requestMatchers("/api/booking/rep/**").hasRole("REPRESENTATIVE")
+                        .requestMatchers("/api/booking/rep/**", "api/booking/rep").hasRole("REPRESENTATIVE")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -68,14 +68,14 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("http://*.ngrok-free.dev");
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         //configuration.setAllowedOrigins(List.of("https://giddying-soon-quarriable.ngrok-free.dev"));
         configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(java.util.List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/", configuration);
+        source.registerCorsConfiguration("/**", configuration);
         return source;
 
     }

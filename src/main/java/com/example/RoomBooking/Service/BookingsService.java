@@ -2,9 +2,7 @@ package com.example.RoomBooking.Service;
 
 import com.example.RoomBooking.Entity.*;
 import com.example.RoomBooking.Repository.*;
-import com.example.RoomBooking.payload.AvailabityRequest;
-import com.example.RoomBooking.payload.BookingRequest;
-import com.example.RoomBooking.payload.BookingRequestFaculty;
+import com.example.RoomBooking.payload.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,9 +34,38 @@ public class BookingsService
     {
         bookingsRepo
     }*/
-    public List<Bookings> getBookings(Integer classId)
+    public List<BookingDTO> getBookings(Integer classId)
     {
-        return this.bookingsRepo.findByClasses_ClassId(classId);
+        List<Bookings> bookings = bookingsRepo.findByClasses_ClassId(classId);
+
+        return bookings.stream().map(b -> {
+            BookingDTO dto = new BookingDTO();
+            dto.setId(b.getId());
+            dto.setDate(b.getDate());
+            dto.setPeriods(b.getPeriods());
+            dto.setCapacity(b.getCapacity());
+
+            // map room
+            Rooms room = b.getRoom();
+            if (room != null) {
+                RoomInfo roomInfo = new RoomInfo();
+                roomInfo.setRoomId(room.getRoomId());
+                roomInfo.setRoomNo(room.getRoomNo());
+                roomInfo.setBuildingName(room.getBuildingName());
+                dto.setRoom(roomInfo);
+            }
+
+            // map classes
+            List<ClassInfo> classInfos = b.getClasses().stream().map(c -> {
+                ClassInfo cinfo = new ClassInfo();
+                cinfo.setClassId(c.getClassId());
+                cinfo.setClassName(c.getClassName());
+                return cinfo;
+            }).toList();
+            dto.setClasses(classInfos);
+
+            return dto;
+        }).toList();
     }
     public String deleteBooking(Integer bookingId)
     {

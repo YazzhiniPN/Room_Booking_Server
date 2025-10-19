@@ -3,6 +3,7 @@ package com.example.RoomBooking.Controller;
 import com.example.RoomBooking.Entity.Bookings;
 import com.example.RoomBooking.Entity.Rooms;
 import com.example.RoomBooking.payload.AvailabityRequest;
+import com.example.RoomBooking.payload.BookingDTO;
 import com.example.RoomBooking.payload.BookingRequest;
 import com.example.RoomBooking.Service.BookingsService;
 import com.example.RoomBooking.payload.BookingRequestFaculty;
@@ -24,7 +25,7 @@ public class BookingsController
 
 
     @GetMapping("/rep/{classId}")
-    public List<Bookings> getBookings(@PathVariable Integer classId){
+    public List<BookingDTO> getBookings(@PathVariable Integer classId){
         return this.bookingsService.getBookings(classId);
     }
 
