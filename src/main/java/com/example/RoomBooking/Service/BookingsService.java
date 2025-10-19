@@ -133,5 +133,22 @@ public class BookingsService
 
         return roomsList;
     }
+    public List<RoomDetailsPermanent> permanentRooms(String buildingName)
+    {
+        List<Rooms> roomsInBuilding=roomDatabaseRepo.findByBuildingName(buildingName);
+        List<RoomDetailsPermanent> permanentClassrooms=new ArrayList<>();
+        for (Rooms room: roomsInBuilding)
+        {
+            RoomDetailsPermanent temp=new RoomDetailsPermanent();
+            if (room.isClassroom())
+            {
+                temp.setRoomNo(room.getRoomNo());
+                temp.setProjector(room.isProjector());
+                temp.setCapacity(room.getCapacity());
+                permanentClassrooms.add(temp);
+            }
+        }
+        return permanentClassrooms;
+    }
 
 }

@@ -2,11 +2,8 @@ package com.example.RoomBooking.Controller;
 
 import com.example.RoomBooking.Entity.Bookings;
 import com.example.RoomBooking.Entity.Rooms;
-import com.example.RoomBooking.payload.AvailabityRequest;
-import com.example.RoomBooking.payload.BookingDTO;
-import com.example.RoomBooking.payload.BookingRequest;
+import com.example.RoomBooking.payload.*;
 import com.example.RoomBooking.Service.BookingsService;
-import com.example.RoomBooking.payload.BookingRequestFaculty;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,4 +47,10 @@ public class BookingsController
     {
         return this.bookingsService.availableRooms(availabityRequest);
     }
+    @GetMapping("/rooms/{building}")
+    public List<RoomDetailsPermanent> permanentRooms(@PathVariable String building )
+    {
+        return this.bookingsService.permanentRooms(building);
+    }
+
 }

@@ -37,7 +37,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/booking/faculty/**","/api/booking/faculty", "/api/faculty/rep","/api/faculty/**", "api/faculty/rep/**").hasRole("FACULTY_ADVISOR")
+                        .requestMatchers("/api/booking/faculty/**","/api/booking/faculty", "/api/faculty/rep","/api/faculty/**", "/api/faculty/rep/**").hasRole("FACULTY_ADVISOR")
                         .requestMatchers("/api/booking/rep/**", "/api/booking/rep", "/api/rep", "/api/rep/**").hasRole("REPRESENTATIVE")
                         .anyRequest().authenticated()
                 )
