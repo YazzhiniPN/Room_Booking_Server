@@ -4,6 +4,8 @@ import com.example.RoomBooking.Entity.Bookings;
 import com.example.RoomBooking.Entity.Rooms;
 import com.example.RoomBooking.payload.*;
 import com.example.RoomBooking.Service.BookingsService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,8 +55,8 @@ public class BookingsController
         return this.bookingsService.permanentRooms(building);
     }
     @DeleteMapping("/faculty/{bookingId}")
-    public String deleteBookingFaculty(@PathVariable Integer bookingId)
+    public String deleteBookingFaculty(@PathVariable Integer bookingId,@AuthenticationPrincipal User user)
     {
-        return this.bookingsService.deleteBookingFaculty(bookingId);
+        return this.bookingsService.deleteBookingFaculty(bookingId,user.getUsername());
     }
 }

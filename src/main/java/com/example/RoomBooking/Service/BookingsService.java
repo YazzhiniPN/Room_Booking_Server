@@ -4,6 +4,7 @@ import com.example.RoomBooking.Entity.*;
 import com.example.RoomBooking.Repository.*;
 import com.example.RoomBooking.payload.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -157,10 +158,27 @@ public class BookingsService
         }
         return permanentClassrooms;
     }
-    public String deleteBookingFaculty(Integer bookingId)
+    /*public String deleteBookingFaculty(Integer bookingId)
     {
         Bookings booking=this.bookingsRepo.findById(bookingId).orElseThrow(()->new EntityNotFoundException("No bookings found with the id "+bookingId));
         bookingsRepo.delete(booking);
         return ("Booking with id "+bookingId+" has been deleted successfully");
+    }*/
+    @Transactional
+    public String deleteBookingFaculty(Integer bookingId,String currentUserId) {
+        Bookings booking = bookingsRepo.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        if (!booking.getFacultyAdvisor().getUserId().equals(currentUserId)) {
+            throw new RuntimeException("Can be deleted only by the faculty who booked");
+        }
+        if (booking.getFacultyAdvisor() != null) {
+            booking.getFacultyAdvisor().setBookings(null);
+        }
+        if (booking.getRoom() != null) {
+            booking.getRoom().getBookings().remove(booking);
+        }
+        bookingsRepo.delete(booking);
+        return "Booking deleted successfully";
     }
+
 }
