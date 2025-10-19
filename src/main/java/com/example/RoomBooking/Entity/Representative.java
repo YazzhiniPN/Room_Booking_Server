@@ -22,7 +22,7 @@ public class Representative implements UserDetails
     private String name;
     @ManyToOne
     @JoinColumn(name = "class_name", nullable = false)
-    @JsonIgnoreProperties({"bookings"})
+    @JsonIgnoreProperties({"bookings","faculty_advisor"})
     private Classes classes;
     /*@Column(name = "class_name", nullable = false)
     private String className;*/
@@ -36,7 +36,7 @@ public class Representative implements UserDetails
     @JoinColumn(name = "faculty_advisor",nullable = false)
     @JsonIgnoreProperties({"representative"})
     private FacultyAdvisor facultyAdvisor;
-    @OneToMany(mappedBy = "rep")
+    @OneToMany(mappedBy = "rep",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Bookings> bookings;
     public Integer getId() {

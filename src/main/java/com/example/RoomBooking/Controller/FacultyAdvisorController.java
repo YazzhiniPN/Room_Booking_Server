@@ -50,13 +50,13 @@ public class FacultyAdvisorController
     }*/
 
     //public Bookings bookClassroom(@RequestBody String userId, @RequestBody)*/
-    @PostMapping("/rep/token")
+    @PostMapping("/rep")
     public Representative addRep(@AuthenticationPrincipal User user, @RequestBody RepDetails repDetails)
     {
         System.out.println(user);
         return this.facultyAdvisor.addRep(user.getUsername(),repDetails);
     }
-    @DeleteMapping("rep/{id}")
+    @DeleteMapping("/rep/{id}")
     public Representative deleteRep(@PathVariable String id)
     {
         return this.facultyAdvisor.deleteRep(id);

@@ -10,6 +10,7 @@ import com.example.RoomBooking.Repository.FacultyAdvisorRepo;
 import com.example.RoomBooking.Repository.RepRepo;
 import com.example.RoomBooking.payload.RepDetails;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class FacultyAdvisorService
         this.facultyAdvisorRepo=facultyAdvisorRepo;
         this.repRepo=repRepo;
         this.classRepo=classRepo;
+        passwordEncoder = new BCryptPasswordEncoder();
     }
     public com.example.RoomBooking.Entity.FacultyAdvisor addFacultyAdvisor(com.example.RoomBooking.Entity.FacultyAdvisor facultyAdvisor)
     {
@@ -63,6 +65,10 @@ public class FacultyAdvisorService
         Classes classes=this.classRepo.findByClassId(repDetails.getClassId()).orElseThrow(()->new EntityNotFoundException("Class not found"));
         String encodedPassword = passwordEncoder.encode(repDetails.getPassword());
 
+        if(!(classes.getFacultyAdvisor().getUserId().equals(facultyAdvisor.getUserId()))){
+            throw new RuntimeException("Faculty advisor can add reps only to their respective classrooms");
+        }
+
         Representative rep=new Representative();
         rep.setPassword(encodedPassword);
         rep.setName(repDetails.getName());
@@ -75,7 +81,13 @@ public class FacultyAdvisorService
     public Representative deleteRep(String id)
     {
         Representative rep=repRepo.findByUserId(id).orElseThrow(()->new EntityNotFoundException("Rep not found"));
+        Classes clazz = rep.getClasses();
+        clazz.getRepresentative().remove(rep);
+        classRepo.save(clazz);
         repRepo.delete(rep);
+        FacultyAdvisor facultyAdvisor = rep.getFacultyAdvisor();
+        facultyAdvisor.getReps().remove(rep);
+        facultyAdvisorRepo.save(facultyAdvisor);
         return rep;
     }
     //public FacultyAdvisor getFacultyDetails(Integer id)
