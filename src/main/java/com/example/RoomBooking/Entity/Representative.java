@@ -20,6 +20,8 @@ public class Representative implements UserDetails
     private Integer id;
     @Column(name = "rep_name",nullable = false)
     private String name;
+    @Column(name = "deleted",nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean deleted;
     @ManyToOne
     @JoinColumn(name = "class_name", nullable = false)
     @JsonIgnoreProperties({"bookings","faculty_advisor"})
@@ -33,12 +35,21 @@ public class Representative implements UserDetails
     @Column(nullable = false)
     private String password;
     @ManyToOne
-    @JoinColumn(name = "faculty_advisor",nullable = false)
+    @JoinColumn(name = "faculty_advisor",nullable = true)
     @JsonIgnoreProperties({"representative"})
     private FacultyAdvisor facultyAdvisor;
     @OneToMany(mappedBy = "rep",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Bookings> bookings;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Integer getId() {
         return id;
     }

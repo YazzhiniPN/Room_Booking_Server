@@ -75,9 +75,10 @@ public class FacultyAdvisorService
         rep.setClasses(classes);
         rep.setFacultyAdvisor(facultyAdvisor);
         //facultyAdvisor.getReps().add(rep);
+        //facultyAdvisorRepo.save(facultyAdvisor);
         return repRepo.save(rep);
     }
-    public Representative deleteRep(String id)
+    /*public Representative deleteRep(String id)
     {
         Representative rep=repRepo.findByUserId(id).orElseThrow(()->new EntityNotFoundException("Rep not found"));
         Classes clazz = rep.getClasses();
@@ -87,6 +88,20 @@ public class FacultyAdvisorService
         FacultyAdvisor facultyAdvisor = rep.getFacultyAdvisor();
         facultyAdvisor.getReps().remove(rep);
         facultyAdvisorRepo.save(facultyAdvisor);
+        return rep;
+    }*/
+    public Representative deleteRep(String id)
+    {
+        Representative rep = repRepo.findByUserId(id)
+                .orElseThrow(() -> new EntityNotFoundException("Rep not found"));
+        rep.setDeleted(true);
+        FacultyAdvisor facultyAdvisor = rep.getFacultyAdvisor();
+        if (facultyAdvisor != null) {
+            facultyAdvisor.getReps().remove(rep);
+            rep.setFacultyAdvisor(null);
+            facultyAdvisorRepo.save(facultyAdvisor);
+        }
+        repRepo.save(rep);
         return rep;
     }
 

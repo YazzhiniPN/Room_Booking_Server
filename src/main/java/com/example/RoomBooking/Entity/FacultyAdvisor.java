@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.DialectOverride;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.hibernate.annotations.Where;
 @Entity
 @Table(name = "faculty_advisors")
 @JsonIgnoreProperties({"classes"})
@@ -29,6 +31,7 @@ public class FacultyAdvisor implements UserDetails
     @OneToMany(mappedBy = "facultyAdvisor")
     @Size(max = 2)
     @JsonIgnore
+    @Where(clause = "deleted = false")
     private List<Representative> reps;
     @OneToOne(mappedBy = "facultyAdvisor")
     private Classes classes;
