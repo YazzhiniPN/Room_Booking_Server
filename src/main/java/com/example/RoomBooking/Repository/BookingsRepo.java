@@ -18,4 +18,5 @@ public interface BookingsRepo extends JpaRepository<Bookings,Integer> {
     //void delete(Optional<Bookings> booking);
     List<Bookings> findByRoomAndDate(Rooms room, LocalDate date);
     List<Bookings> findByFacultyAdvisor(FacultyAdvisor facultyAdvisor);
+    boolean existsByRoomAndFacultyAdvisorIsNotNull(Rooms room);
 }

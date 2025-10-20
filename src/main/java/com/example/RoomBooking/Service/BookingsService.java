@@ -117,7 +117,13 @@ public class BookingsService
         String buildingName=availabityRequest.getBuildingName();
         Set<Integer> requestPeriods=availabityRequest.getPeriods();
         List<Rooms> roomsList=this.roomDatabaseRepo.findByBuildingName(buildingName);
-
+        List<Rooms> filteredRooms = new ArrayList<>();
+        for (Rooms room : roomsList) {
+            if (!bookingsRepo.existsByRoomAndFacultyAdvisorIsNotNull(room)) {
+                filteredRooms.add(room);
+            }
+        }
+        roomsList = filteredRooms;
         for(Rooms room: roomsList)
         {
             List<Bookings> bookingsList=bookingsRepo.findByRoomAndDate(room,date);
@@ -134,6 +140,7 @@ public class BookingsService
                     }
                 }
             }
+
             room.setBookings(roombookings);
         }
 
