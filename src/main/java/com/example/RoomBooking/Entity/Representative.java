@@ -35,7 +35,7 @@ public class Representative implements UserDetails
     @Column(nullable = false)
     private String password;
     @ManyToOne
-    @JoinColumn(name = "faculty_advisor",nullable = true)
+    @JoinColumn(name = "faculty_advisor",nullable = false)
     @JsonIgnoreProperties({"representative"})
     private FacultyAdvisor facultyAdvisor;
     @OneToMany(mappedBy = "rep",cascade = CascadeType.ALL, orphanRemoval = true)

@@ -95,15 +95,15 @@ public class FacultyAdvisorService
         Representative rep = repRepo.findByUserId(id)
                 .orElseThrow(() -> new EntityNotFoundException("Rep not found"));
         rep.setDeleted(true);
-        FacultyAdvisor facultyAdvisor = rep.getFacultyAdvisor();
-        if (facultyAdvisor != null) {
-            facultyAdvisor.getReps().remove(rep);
-            rep.setFacultyAdvisor(null);
-            facultyAdvisorRepo.save(facultyAdvisor);
-        }
+        FacultyAdvisor facultyAdvisor= rep.getFacultyAdvisor();
+        List<Representative> repList=facultyAdvisor.getReps();
+        repList.remove(rep);
+        facultyAdvisor.setReps(repList);
+        facultyAdvisorRepo.save(facultyAdvisor);
         repRepo.save(rep);
         return rep;
     }
+
 
     public FacultyAdvisorDTO getFacultyAdvisor(String userId){
         FacultyAdvisor facultyAdvisor = this.facultyAdvisorRepo.findByUserId(userId).orElseThrow(() -> new EntityNotFoundException("Faculty advisor with the given id not found"));
