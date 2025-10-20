@@ -46,7 +46,7 @@ public class BookingsController
 
     @GetMapping("/faculty")
     public List<BookingClassRoomInfo> getBookingClassRoomInfo(@AuthenticationPrincipal User user){
-        return this.bookingsService.getBookinClassRoomInfo(user.getUsername());
+        return this.bookingsService.getBookingClassRoomInfo(user.getUsername());
     }
 
     @PostMapping("/availability")

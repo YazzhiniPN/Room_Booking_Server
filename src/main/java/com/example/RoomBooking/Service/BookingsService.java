@@ -6,12 +6,10 @@ import com.example.RoomBooking.payload.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -159,7 +157,7 @@ public class BookingsService
                 temp.setProjector(room.isProjector());
                 temp.setCapacity(room.getCapacity());
                 temp.setRoomId(room.getRoomId());
-                temp.setBuildingName(buildingName);
+                temp.setBuildingName(building);
                 permanentClassrooms.add(temp);
             }
         }
@@ -188,7 +186,7 @@ public class BookingsService
         return "Booking deleted successfully";
     }
 
-    public List<BookingClassRoomInfo> getBookinClassRoomInfo(String userId){
+    public List<BookingClassRoomInfo> getBookingClassRoomInfo(String userId){
         FacultyAdvisor facultyAdvisor = facultyAdvisorRepo.findByUserId(userId).orElseThrow(() -> new EntityNotFoundException("Faculty Not Found"));
 
         List<Bookings> bookings = bookingsRepo.findByFacultyAdvisor(facultyAdvisor);
@@ -214,9 +212,6 @@ public class BookingsService
         }
 
         return bookingClassRoomInfos;
-
-
-
 
     }
 

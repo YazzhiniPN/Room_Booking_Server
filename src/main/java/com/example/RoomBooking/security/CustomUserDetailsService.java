@@ -1,7 +1,9 @@
 package com.example.RoomBooking.security;
 
+import com.example.RoomBooking.Entity.Representative;
 import com.example.RoomBooking.Repository.FacultyAdvisorRepo;
 import com.example.RoomBooking.Repository.RepRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,14 +28,21 @@ public class CustomUserDetailsService implements UserDetailsService {
                         .password(f.getPassword())
                         .roles("FACULTY_ADVISOR")
                         .build())
-                .orElseGet(() ->
-                        repRepo.findByUserId(username)
-                                .map(r -> User.builder()
-                                        .username(r.getUsername())
-                                        .password(r.getPassword())
-                                        .roles("REPRESENTATIVE")
-                                        .build()
-                                ).orElseThrow(() -> new RuntimeException("User not found"))
+                .orElseGet(() ->{
+                    Representative rep = repRepo.findByUserId(username).orElseThrow(() -> new EntityNotFoundException("Representative not found"));
+
+                    if(rep.isDeleted()){
+                        throw new EntityNotFoundException("Rep has been deleted");
+                    }
+
+                    UserDetails user = User.builder()
+                            .username(rep.getUserId())
+                            .password(rep.getPassword())
+                            .roles("REPRESENTATIVE")
+                            .build();
+                    return user;
+                }
+
                 );
     }
 }
