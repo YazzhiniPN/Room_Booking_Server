@@ -3,7 +3,7 @@ package com.example.RoomBooking.payload;
 public class RepDetails
 {
     private String name;
-    private int rollNo;
+    private Integer rollNo;
     private String userId;
     private String password;
 
@@ -16,11 +16,11 @@ public class RepDetails
         this.name = name;
     }
 
-    public int getRollNo() {
+    public Integer getRollNo() {
         return rollNo;
     }
 
-    public void setRollNo(int rollNo) {
+    public void setRollNo(Integer rollNo) {
         this.rollNo = rollNo;
     }
 

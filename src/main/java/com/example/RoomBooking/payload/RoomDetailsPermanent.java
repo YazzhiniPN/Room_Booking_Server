@@ -2,9 +2,27 @@ package com.example.RoomBooking.payload;
 
 public class RoomDetailsPermanent
 {
+    private int roomId;
     private String roomNo;
     private boolean isProjector;
     private int capacity;
+    private String buildingName;
+
+    public String getBuildingName() {
+        return buildingName;
+    }
+
+    public void setBuildingName(String buildingName) {
+        this.buildingName = buildingName;
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
 
     public String getRoomNo() {
         return roomNo;

@@ -4,6 +4,8 @@ public class RoomInfo {
     private Integer roomId;
     private String roomNo;
     private String buildingName;
+    private boolean projector;
+    private int capacity;
 
     public Integer getRoomId() {
         return roomId;
@@ -27,5 +29,21 @@ public class RoomInfo {
 
     public void setBuildingName(String buildingName) {
         this.buildingName = buildingName;
+    }
+
+    public boolean isProjector() {
+        return projector;
+    }
+
+    public void setProjector(boolean projector) {
+        this.projector = projector;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 }

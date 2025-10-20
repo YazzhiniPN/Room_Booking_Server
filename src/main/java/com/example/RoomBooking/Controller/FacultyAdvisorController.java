@@ -3,7 +3,9 @@ package com.example.RoomBooking.Controller;
 import com.example.RoomBooking.Entity.Bookings;
 import com.example.RoomBooking.Entity.FacultyAdvisor;
 import com.example.RoomBooking.Entity.Representative;
+import com.example.RoomBooking.Entity.Rooms;
 import com.example.RoomBooking.Service.FacultyAdvisorService;
+import com.example.RoomBooking.payload.FacultyAdvisorDTO;
 import com.example.RoomBooking.payload.RepDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -60,6 +62,11 @@ public class FacultyAdvisorController
     public Representative deleteRep(@PathVariable String id)
     {
         return this.facultyAdvisor.deleteRep(id);
+    }
+
+    @GetMapping("/token")
+    public FacultyAdvisorDTO getFacultyAdvisor(@AuthenticationPrincipal User user){
+        return this.facultyAdvisor.getFacultyAdvisor(user.getUsername());
     }
 
 }

@@ -143,7 +143,12 @@ public class BookingsService
     }
     public List<RoomDetailsPermanent> permanentRooms(String buildingName)
     {
-        List<Rooms> roomsInBuilding=roomDatabaseRepo.findByBuildingName(buildingName);
+        String building;
+        if(buildingName.equals("rb"))
+            building = "Red Building";
+        else
+            building = "Knowledge Park";
+        List<Rooms> roomsInBuilding=roomDatabaseRepo.findByBuildingName(building);
         List<RoomDetailsPermanent> permanentClassrooms=new ArrayList<>();
         for (Rooms room: roomsInBuilding)
         {
@@ -153,6 +158,8 @@ public class BookingsService
                 temp.setRoomNo(room.getRoomNo());
                 temp.setProjector(room.isProjector());
                 temp.setCapacity(room.getCapacity());
+                temp.setRoomId(room.getRoomId());
+                temp.setBuildingName(buildingName);
                 permanentClassrooms.add(temp);
             }
         }
@@ -179,6 +186,38 @@ public class BookingsService
         }
         bookingsRepo.delete(booking);
         return "Booking deleted successfully";
+    }
+
+    public List<BookingClassRoomInfo> getBookinClassRoomInfo(String userId){
+        FacultyAdvisor facultyAdvisor = facultyAdvisorRepo.findByUserId(userId).orElseThrow(() -> new EntityNotFoundException("Faculty Not Found"));
+
+        List<Bookings> bookings = bookingsRepo.findByFacultyAdvisor(facultyAdvisor);
+
+        System.out.println(bookings);
+
+        List<BookingClassRoomInfo> bookingClassRoomInfos = new ArrayList<>();
+
+        for(Bookings bookings1: bookings){
+            BookingClassRoomInfo temp = new BookingClassRoomInfo();
+            temp.setDate(bookings1.getDate());
+            temp.setId(bookings1.getId());
+            temp.setCapacity(bookings1.getCapacity());
+            temp.setPeriods(bookings1.getPeriods());
+            RoomInfo roomInfo = new RoomInfo();
+            roomInfo.setBuildingName(bookings1.getRoom().getBuildingName());
+            roomInfo.setRoomNo(bookings1.getRoom().getRoomNo());
+            roomInfo.setRoomId(bookings1.getRoom().getRoomId());
+            roomInfo.setCapacity(bookings1.getRoom().getCapacity());
+            roomInfo.setProjector(bookings1.getRoom().isProjector());
+            temp.setRoom(roomInfo);
+            bookingClassRoomInfos.add(temp);
+        }
+
+        return bookingClassRoomInfos;
+
+
+
+
     }
 
 }

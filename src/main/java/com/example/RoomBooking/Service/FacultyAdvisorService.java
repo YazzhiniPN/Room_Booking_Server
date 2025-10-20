@@ -8,7 +8,9 @@ import com.example.RoomBooking.Entity.Representative;
 import com.example.RoomBooking.Repository.ClassRepo;
 import com.example.RoomBooking.Repository.FacultyAdvisorRepo;
 import com.example.RoomBooking.Repository.RepRepo;
+import com.example.RoomBooking.payload.FacultyAdvisorDTO;
 import com.example.RoomBooking.payload.RepDetails;
+import com.example.RoomBooking.payload.RepresentativeDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FacultyAdvisorService
@@ -64,16 +67,14 @@ public class FacultyAdvisorService
         }
         Classes classes=this.classRepo.findByClassId(facultyAdvisor.getClasses().getClassId()).orElseThrow(()->new EntityNotFoundException("Class not found"));
         String encodedPassword = passwordEncoder.encode(repDetails.getPassword());
-
-
-
-        Representative rep=new Representative();
+        Representative rep = new Representative();
         rep.setPassword(encodedPassword);
         rep.setName(repDetails.getName());
+        rep.setRollNo(repDetails.getRollNo());
         rep.setUserId(repDetails.getUserId());
         rep.setClasses(classes);
         rep.setFacultyAdvisor(facultyAdvisor);
-        facultyAdvisor.getReps().add(rep);
+        //facultyAdvisor.getReps().add(rep);
         return repRepo.save(rep);
     }
     public Representative deleteRep(String id)
@@ -87,6 +88,39 @@ public class FacultyAdvisorService
         facultyAdvisor.getReps().remove(rep);
         facultyAdvisorRepo.save(facultyAdvisor);
         return rep;
+    }
+
+    public FacultyAdvisorDTO getFacultyAdvisor(String userId){
+        FacultyAdvisor facultyAdvisor = this.facultyAdvisorRepo.findByUserId(userId).orElseThrow(() -> new EntityNotFoundException("Faculty advisor with the given id not found"));
+        return convertToDTO(facultyAdvisor);
+    }
+
+    public FacultyAdvisorDTO convertToDTO(FacultyAdvisor advisor) {
+        FacultyAdvisorDTO dto = new FacultyAdvisorDTO();
+        dto.setFacultyId(advisor.getFacultyId());
+        dto.setFacultyName(advisor.getFacultyName());
+        dto.setUserId(advisor.getUserId());
+
+        if (advisor.getClasses() != null) {
+            dto.setClassId(advisor.getClasses().getClassId());
+            dto.setClassName(advisor.getClasses().getClassName());
+        }
+
+        if (advisor.getReps() != null) {
+            List<RepresentativeDTO> repDTOs = advisor.getReps().stream()
+                    .map(rep -> {
+                        RepresentativeDTO r = new RepresentativeDTO();
+                        r.setRepId(rep.getId());
+                        r.setRepName(rep.getName());
+                        r.setUserId(rep.getUserId());
+                        r.setRollNo(rep.getRollNo());
+                        return r;
+                    })
+                    .toList();
+            dto.setRepresentatives(repDTOs);
+        }
+
+        return dto;
     }
     //public FacultyAdvisor getFacultyDetails(Integer id)
     //{

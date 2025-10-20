@@ -44,6 +44,11 @@ public class BookingsController
         return this.bookingsService.addBookingFaculty(bookingRequestFaculty);
     }
 
+    @GetMapping("/faculty")
+    public List<BookingClassRoomInfo> getBookingClassRoomInfo(@AuthenticationPrincipal User user){
+        return this.bookingsService.getBookinClassRoomInfo(user.getUsername());
+    }
+
     @PostMapping("/availability")
     public List<Rooms> availableRooms(@RequestBody AvailabityRequest availabityRequest)
     {
