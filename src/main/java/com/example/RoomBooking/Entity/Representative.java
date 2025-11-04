@@ -143,4 +143,6 @@ public class Representative implements UserDetails
     public void setBookings(List<Bookings> bookings) {
         this.bookings = bookings;
     }
+
+
 }

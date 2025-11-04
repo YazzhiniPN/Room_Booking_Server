@@ -122,4 +122,6 @@ public class Bookings {
     public void setRep(Representative rep) {
         this.rep = rep;
     }
+
+
 }

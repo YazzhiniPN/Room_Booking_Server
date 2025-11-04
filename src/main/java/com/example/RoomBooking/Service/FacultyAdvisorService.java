@@ -119,7 +119,13 @@ public class FacultyAdvisorService
         if (advisor.getClasses() != null) {
             dto.setClassId(advisor.getClasses().getClassId());
             dto.setClassName(advisor.getClasses().getClassName());
+            dto.setAssess(advisor.getClasses().isAssess());
+            dto.setFromDate(advisor.getClasses().getFromDate());
+            dto.setToDate(advisor.getClasses().getToDate());
+            dto.setPeriods(advisor.getClasses().getPeriods());
         }
+
+
 
         if (advisor.getReps() != null) {
             List<RepresentativeDTO> repDTOs = advisor.getReps().stream()

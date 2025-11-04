@@ -1,6 +1,9 @@
 package com.example.RoomBooking.payload;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class FacultyAdvisorDTO {
     private Integer facultyId;
@@ -9,6 +12,43 @@ public class FacultyAdvisorDTO {
 
     private Integer classId;
     private String className;
+
+    private LocalDate fromDate;
+    private LocalDate toDate;
+    private Boolean isAssess;
+    private Set<Integer> periods;
+
+    public LocalDate getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(LocalDate fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public LocalDate getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(LocalDate toDate) {
+        this.toDate = toDate;
+    }
+
+    public Boolean getAssess() {
+        return isAssess;
+    }
+
+    public void setAssess(Boolean assess) {
+        isAssess = assess;
+    }
+
+    public Set<Integer> getPeriods() {
+        return periods;
+    }
+
+    public void setPeriods(Set<Integer> periods) {
+        this.periods = periods;
+    }
 
     private List<RepresentativeDTO> representatives;
 

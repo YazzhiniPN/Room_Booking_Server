@@ -23,6 +23,28 @@ public class BookingsController
     }
 
 
+    @GetMapping("/token")
+    public String checkTypeOfUser(@AuthenticationPrincipal User user){
+        if (user == null || user.getAuthorities() == null) {
+            return "Unauthorized";
+        }
+
+        boolean isRepresentative = user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_REPRESENTATIVE"));
+
+        boolean isFacultyAdvisor = user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_FACULTY_ADVISOR"));
+
+        if (isRepresentative) {
+            return "Representative";
+        } else if (isFacultyAdvisor) {
+            return "FacultyAdvisor";
+        } else {
+            return "Unknown";
+        }
+    }
+
+
     @GetMapping("/rep/{classId}")
     public List<BookingDTO> getBookings(@PathVariable Integer classId){
         return this.bookingsService.getBookings(classId);
@@ -63,16 +85,16 @@ public class BookingsController
     {
         return this.bookingsService.deleteBookingFaculty(bookingId,user.getUsername());
     }
-    @PostMapping("/assess")
+    @PostMapping("/faculty/assess")
     public String addAssessPeriod(@RequestBody AssessPeriodsRequest assessPeriodsRequest,@AuthenticationPrincipal User user)
     {
         this.bookingsService.addAssessPeriod(assessPeriodsRequest,user.getUsername());
         return "Assess period added";
     }
-    @DeleteMapping("/assess")
-    public String deleteAssessPeriod(@RequestBody AssessPeriodsRequest assessPeriodsRequest,@AuthenticationPrincipal User user)
+    @DeleteMapping("/faculty/assess")
+    public String deleteAssessPeriod(@AuthenticationPrincipal User user)
     {
-        this.bookingsService.deleteAssessPeriod(assessPeriodsRequest,user.getUsername());
+        this.bookingsService.deleteAssessPeriod(user.getUsername());
         return "Assess period removed";
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.awt.print.Book;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -129,40 +130,80 @@ public class BookingsService
         Set<Integer> requestPeriods=availabityRequest.getPeriods();
         List<Rooms> roomsList=this.roomDatabaseRepo.findByBuildingName(buildingName);
         List<Rooms> filteredRooms = new ArrayList<>();
-        for (Rooms room : roomsList) {
-            if (!bookingsRepo.existsByRoomAndFacultyAdvisorIsNotNull(room)) {
+        for(Rooms room: roomsList){
+            List<Bookings> list = bookingsRepo.findByRoom(room);
+            boolean allRep = true;
+            for(Bookings book: list){
+                if(book.getFacultyAdvisor() != null) allRep = false;
+            }
+            if(allRep){
                 filteredRooms.add(room);
             }else{
-                List<Bookings> bookings = bookingsRepo.findByRoomAndFacultyAdvisorIsNotNull(room);
-                if(!bookings.isEmpty()){
-                    for(Bookings book: bookings){
+                boolean isAvailable = false;
+                for(Bookings book: list){
+                    if(book.getFacultyAdvisor() != null){
                         FacultyAdvisor facultyAdvisor = book.getFacultyAdvisor();
                         List<Classes> classes = classRepo.findByFacultyAdvisor(facultyAdvisor);
                         Classes currentClass = classes.get(0);
+                        boolean containsPeriod = true;
+                        for(Integer period : requestPeriods){
+                            if(!currentClass.getPeriods().contains(period)) containsPeriod = false;
+                        }
                         if (
                                 currentClass.isAssess() &&
                                         (
                                                 (date.isBefore(currentClass.getToDate()) && date.isAfter(currentClass.getFromDate())) ||
                                                         date.isEqual(currentClass.getFromDate()) ||
                                                         date.isEqual(currentClass.getToDate())
-                                        ) && currentClass.getPeriods().contains(requestPeriods)
+                                        ) && containsPeriod
                         ) {
-                            filteredRooms.add(room);
+                                isAvailable = true;
                         }
                     }
                 }
+                if(isAvailable) filteredRooms.add(room);
             }
         }
+
         roomsList = filteredRooms;
+//        for (Rooms room : roomsList) {
+//            List<Bookings> list = bookingsRepo.findByRoom(room);
+//            System.out.println(list);
+//            if (!bookingsRepo.existsByRoomAndFacultyAdvisorIsNotNull(room)) {
+//                filteredRooms.add(room);
+//            }else{
+//                List<Bookings> bookings = bookingsRepo.findByRoomAndFacultyAdvisorIsNotNull(room);
+//                System.out.println(bookings);
+//                if(!bookings.isEmpty()){
+//                    for(Bookings book: bookings){
+//                        FacultyAdvisor facultyAdvisor = book.getFacultyAdvisor();
+//                        List<Classes> classes = classRepo.findByFacultyAdvisor(facultyAdvisor);
+//                        Classes currentClass = classes.get(0);
+//                        System.out.println(currentClass);
+//                        if (
+//                                currentClass.isAssess() &&
+//                                        (
+//                                                (date.isBefore(currentClass.getToDate()) && date.isAfter(currentClass.getFromDate())) ||
+//                                                        date.isEqual(currentClass.getFromDate()) ||
+//                                                        date.isEqual(currentClass.getToDate())
+//                                        ) && currentClass.getPeriods().contains(requestPeriods)
+//                        ) {
+//                            filteredRooms.add(room);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        roomsList = filteredRooms;
         for(Rooms room: roomsList)
         {
             List<Bookings> bookingsList=bookingsRepo.findByRoomAndDate(room,date);
             List<Bookings> roombookings=new ArrayList<>();
             for (Bookings booking:bookingsList)
             {
-                if(booking.getFacultyAdvisor() != null) {
-                    continue;
-                }
+//                if(booking.getFacultyAdvisor() != null) {
+//                    continue;
+//                }
                 Set<Integer> bookingPeriods=booking.getPeriods();
                 for(Integer period: bookingPeriods)
                 {
@@ -279,7 +320,7 @@ public class BookingsService
         classFaculty.setPeriods(assessPeriodsRequest.getPeriods());
         classRepo.save(classFaculty);
     }
-    public void deleteAssessPeriod(AssessPeriodsRequest assessPeriodsRequest,String currentUserId)
+    public void deleteAssessPeriod(String currentUserId)
     {
         FacultyAdvisor facultyAdvisor=facultyAdvisorRepo.findByUserId(currentUserId).orElseThrow(() -> new EntityNotFoundException("Faculty Not Found"));
         Classes classFaculty = facultyAdvisor.getClasses();
@@ -291,21 +332,16 @@ public class BookingsService
         {
             throw new EntityExistsException("Assess period is not active, cannot remove");
         }
-        boolean fromDateMatch=(classFaculty.getFromDate().equals(assessPeriodsRequest.getFromDate()));
-        boolean toDateMatch=(classFaculty.getToDate().equals(assessPeriodsRequest.getToDate()));
-        boolean periodsMatch=(classFaculty.getPeriods().equals(assessPeriodsRequest.getPeriods()));
-        if(fromDateMatch && toDateMatch && periodsMatch)
-        {
+
+
+
             classFaculty.setAssess(false);
             classFaculty.setToDate(null);
             classFaculty.setFromDate(null);
             classFaculty.setPeriods(null);
             classRepo.save(classFaculty);
-        }
-        else
-        {
-            throw new EntityNotFoundException("No matching assess period to remove");
-        }
+
+
     }
 
 }
