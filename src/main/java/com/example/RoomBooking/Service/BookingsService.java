@@ -38,8 +38,8 @@ public class BookingsService
     public List<BookingDTO> getBookings(Integer classId)
     {
         //List<Bookings> bookings = bookingsRepo.findByClasses_ClassId(classId);
-        List<Bookings> bookings=bookingsRepo.findByClasses_ClassIdAndClasses_FacultyAdvisorIsNull(classId);
-        return bookings.stream().map(b -> {
+        List<Bookings> bookings=bookingsRepo.findByClasses_ClassId(classId);
+        List<BookingDTO> bookingsReturn = bookings.stream().filter(b -> b.getFacultyAdvisor() == null).map(b -> {
             BookingDTO dto = new BookingDTO();
             dto.setId(b.getId());
             dto.setDate(b.getDate());
@@ -67,6 +67,7 @@ public class BookingsService
 
             return dto;
         }).toList();
+        return bookingsReturn;
     }
     public String deleteBooking(Integer bookingId)
     {
