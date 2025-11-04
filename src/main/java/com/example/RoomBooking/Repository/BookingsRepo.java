@@ -14,9 +14,11 @@ import java.util.Set;
 
 public interface BookingsRepo extends JpaRepository<Bookings,Integer> {
     List<Bookings> findByClasses_ClassId(Integer classId);
-
+    List<Bookings> findByClasses_ClassIdAndClasses_FacultyAdvisorIsNull(Integer classId);
     //void delete(Optional<Bookings> booking);
     List<Bookings> findByRoomAndDate(Rooms room, LocalDate date);
     List<Bookings> findByFacultyAdvisor(FacultyAdvisor facultyAdvisor);
     boolean existsByRoomAndFacultyAdvisorIsNotNull(Rooms room);
+    List<Bookings> findByFacultyAdvisorIsNotNull();
+
 }

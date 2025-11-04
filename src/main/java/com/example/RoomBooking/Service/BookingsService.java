@@ -3,6 +3,7 @@ package com.example.RoomBooking.Service;
 import com.example.RoomBooking.Entity.*;
 import com.example.RoomBooking.Repository.*;
 import com.example.RoomBooking.payload.*;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingsService
@@ -35,8 +37,8 @@ public class BookingsService
     }*/
     public List<BookingDTO> getBookings(Integer classId)
     {
-        List<Bookings> bookings = bookingsRepo.findByClasses_ClassId(classId);
-
+        //List<Bookings> bookings = bookingsRepo.findByClasses_ClassId(classId);
+        List<Bookings> bookings=bookingsRepo.findByClasses_ClassIdAndClasses_FacultyAdvisorIsNull(classId);
         return bookings.stream().map(b -> {
             BookingDTO dto = new BookingDTO();
             dto.setId(b.getId());
@@ -94,6 +96,9 @@ public class BookingsService
     public Bookings addBookingFaculty(BookingRequestFaculty bookingRequestFaculty)
     {
         Rooms room=this.roomDatabaseRepo.findByRoomId(bookingRequestFaculty.getRoomId()).orElseThrow(() -> new EntityNotFoundException("Room not found"));
+        if (!room.isClassroom()) {
+            throw new IllegalStateException("This room cannot be booked as a classroom");
+        }
         Classes classes = this.classRepo.findByClassId(bookingRequestFaculty.getClassId())
                 .orElseThrow(() -> new EntityNotFoundException("Class not found"));
         FacultyAdvisor facultyAdvisor=this.facultyAdvisorRepo.findByUserId(bookingRequestFaculty.getUserId()).orElseThrow(()->new EntityNotFoundException("Faculty not found"));
@@ -158,6 +163,14 @@ public class BookingsService
         for (Rooms room: roomsInBuilding)
         {
             RoomDetailsPermanent temp=new RoomDetailsPermanent();
+            List<Bookings> facultybookings=bookingsRepo.findByFacultyAdvisorIsNotNull();
+            List<Rooms> roomsBookedFaculty = facultybookings.stream()
+                    .map(Bookings::getRoom)
+                    .collect(Collectors.toList());
+            if(roomsBookedFaculty.contains(room))
+            {
+                continue;
+            }
             if (room.isClassroom())
             {
                 temp.setRoomNo(room.getRoomNo());
@@ -170,12 +183,7 @@ public class BookingsService
         }
         return permanentClassrooms;
     }
-    /*public String deleteBookingFaculty(Integer bookingId)
-    {
-        Bookings booking=this.bookingsRepo.findById(bookingId).orElseThrow(()->new EntityNotFoundException("No bookings found with the id "+bookingId));
-        bookingsRepo.delete(booking);
-        return ("Booking with id "+bookingId+" has been deleted successfully");
-    }*/
+
     @Transactional
     public String deleteBookingFaculty(Integer bookingId,String currentUserId) {
         Bookings booking = bookingsRepo.findById(bookingId)
@@ -221,5 +229,10 @@ public class BookingsService
         return bookingClassRoomInfos;
 
     }
-
+    /*public String deleteBookingFaculty(Integer bookingId)
+    {
+        Bookings booking=this.bookingsRepo.findById(bookingId).orElseThrow(()->new EntityNotFoundException("No bookings found with the id "+bookingId));
+        bookingsRepo.delete(booking);
+        return ("Booking with id "+bookingId+" has been deleted successfully");
+    }*/
 }

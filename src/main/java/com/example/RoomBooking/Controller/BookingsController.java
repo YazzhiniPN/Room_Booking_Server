@@ -27,7 +27,6 @@ public class BookingsController
     public List<BookingDTO> getBookings(@PathVariable Integer classId){
         return this.bookingsService.getBookings(classId);
     }
-
     @DeleteMapping("/rep/{bookingId}")
     public String deleteBooking(@PathVariable Integer bookingId)
     {

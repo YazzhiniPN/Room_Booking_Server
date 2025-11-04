@@ -13,5 +13,8 @@ public interface RoomDatabaseRepo extends JpaRepository<Rooms,Integer> {
              String buildingName,LocalDate date,Set<Integer> periods);
     public Optional<Rooms> findByRoomId(Integer id);
     public List<Rooms> findByBuildingName(String buildingName);
+    List<Rooms> findByIsClassroomTrue();
+    List<Rooms> findByIsClassroomFalse();
+
 
 }
