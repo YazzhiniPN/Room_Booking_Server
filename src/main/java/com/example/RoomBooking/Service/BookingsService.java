@@ -145,7 +145,7 @@ public class BookingsService
                                                 (date.isBefore(currentClass.getToDate()) && date.isAfter(currentClass.getFromDate())) ||
                                                         date.isEqual(currentClass.getFromDate()) ||
                                                         date.isEqual(currentClass.getToDate())
-                                        )
+                                        ) && currentClass.getPeriods().contains(requestPeriods)
                         ) {
                             filteredRooms.add(room);
                         }
@@ -160,6 +160,9 @@ public class BookingsService
             List<Bookings> roombookings=new ArrayList<>();
             for (Bookings booking:bookingsList)
             {
+                if(booking.getFacultyAdvisor() != null) {
+                    continue;
+                }
                 Set<Integer> bookingPeriods=booking.getPeriods();
                 for(Integer period: bookingPeriods)
                 {
