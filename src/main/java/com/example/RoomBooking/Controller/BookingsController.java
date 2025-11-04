@@ -63,4 +63,16 @@ public class BookingsController
     {
         return this.bookingsService.deleteBookingFaculty(bookingId,user.getUsername());
     }
+    @PostMapping("/assess")
+    public String addAssessPeriod(@RequestBody AssessPeriodsRequest assessPeriodsRequest,@AuthenticationPrincipal User user)
+    {
+        this.bookingsService.addAssessPeriod(assessPeriodsRequest,user.getUsername());
+        return "Assess period added";
+    }
+    @DeleteMapping("/assess")
+    public String deleteAssessPeriod(@RequestBody AssessPeriodsRequest assessPeriodsRequest,@AuthenticationPrincipal User user)
+    {
+        this.bookingsService.deleteAssessPeriod(assessPeriodsRequest,user.getUsername());
+        return "Assess period removed";
+    }
 }

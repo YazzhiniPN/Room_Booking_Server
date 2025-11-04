@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "classes")
@@ -25,6 +27,51 @@ public class Classes
     //@JsonIgnoreProperties
     @JsonIgnore
     private List<Representative> representative;
+    @Column(name = "is_assess", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean isAssess = false;
+    @Column(name = "from_date")
+    private LocalDate fromDate=null;
+    @Column(name = "to_date")
+    private LocalDate toDate=null;
+    @ElementCollection
+    @CollectionTable(
+            name = "class_periods",
+            joinColumns = @JoinColumn(name = "class_id")
+    )
+    @Column(name="periods")
+    private Set<Integer> periods=null;
+
+    public boolean isAssess() {
+        return isAssess;
+    }
+
+    public void setAssess(boolean assess) {
+        isAssess = assess;
+    }
+
+    public LocalDate getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(LocalDate fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public LocalDate getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(LocalDate toDate) {
+        this.toDate = toDate;
+    }
+
+    public Set<Integer> getPeriods() {
+        return periods;
+    }
+
+    public void setPeriods(Set<Integer> periods) {
+        this.periods = periods;
+    }
 
     public Integer getClassId() {
         return classId;

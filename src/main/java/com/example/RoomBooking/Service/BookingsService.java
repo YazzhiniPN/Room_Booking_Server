@@ -6,7 +6,11 @@ import com.example.RoomBooking.payload.*;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -236,4 +240,48 @@ public class BookingsService
         bookingsRepo.delete(booking);
         return ("Booking with id "+bookingId+" has been deleted successfully");
     }*/
+    public void addAssessPeriod(AssessPeriodsRequest assessPeriodsRequest,String currentUserId)
+    {
+
+        FacultyAdvisor facultyAdvisor=facultyAdvisorRepo.findByUserId(currentUserId).orElseThrow(() -> new EntityNotFoundException("Faculty Not Found"));
+        Classes classFaculty = facultyAdvisor.getClasses();
+        if(classFaculty.isAssess())
+        {
+            throw new EntityExistsException("Assess period is already added, cannot add");
+        }
+        classFaculty.setAssess(true);
+        classFaculty.setFromDate(assessPeriodsRequest.getFromDate());
+        classFaculty.setToDate(assessPeriodsRequest.getToDate());
+        classFaculty.setPeriods(assessPeriodsRequest.getPeriods());
+        classRepo.save(classFaculty);
+    }
+    public void deleteAssessPeriod(AssessPeriodsRequest assessPeriodsRequest,String currentUserId)
+    {
+        FacultyAdvisor facultyAdvisor=facultyAdvisorRepo.findByUserId(currentUserId).orElseThrow(() -> new EntityNotFoundException("Faculty Not Found"));
+        Classes classFaculty = facultyAdvisor.getClasses();
+        if (classFaculty == null)
+        {
+            throw new EntityNotFoundException("Faculty is not assigned to any class");
+        }
+        if (!classFaculty.isAssess())
+        {
+            throw new EntityExistsException("Assess period is not active, cannot remove");
+        }
+        boolean fromDateMatch=(classFaculty.getFromDate().equals(assessPeriodsRequest.getFromDate()));
+        boolean toDateMatch=(classFaculty.getToDate().equals(assessPeriodsRequest.getToDate()));
+        boolean periodsMatch=(classFaculty.getPeriods().equals(assessPeriodsRequest.getPeriods()));
+        if(fromDateMatch && toDateMatch && periodsMatch)
+        {
+            classFaculty.setAssess(false);
+            classFaculty.setToDate(null);
+            classFaculty.setFromDate(null);
+            classFaculty.setPeriods(null);
+            classRepo.save(classFaculty);
+        }
+        else
+        {
+            throw new EntityNotFoundException("No matching assess period to remove");
+        }
+    }
+
 }
