@@ -20,5 +20,6 @@ public interface BookingsRepo extends JpaRepository<Bookings,Integer> {
     List<Bookings> findByFacultyAdvisor(FacultyAdvisor facultyAdvisor);
     boolean existsByRoomAndFacultyAdvisorIsNotNull(Rooms room);
     List<Bookings> findByFacultyAdvisorIsNotNull();
+    boolean existsByRoom(Rooms room);
 
 }

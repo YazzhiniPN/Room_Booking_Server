@@ -17,4 +17,5 @@ public interface RoomDatabaseRepo extends JpaRepository<Rooms,Integer> {
     List<Rooms> findByIsClassroomFalse();
 
 
+
 }

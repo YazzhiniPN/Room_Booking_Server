@@ -28,7 +28,7 @@ public class Representative implements UserDetails
     private Classes classes;
     /*@Column(name = "class_name", nullable = false)
     private String className;*/
-    @Column(name = "roll_no", nullable = false, unique = true)
+    @Column(name = "roll_no", nullable = false)
     private int rollNo;
     @Column(name="user_id",nullable = false,unique = true)
     private String userId;
