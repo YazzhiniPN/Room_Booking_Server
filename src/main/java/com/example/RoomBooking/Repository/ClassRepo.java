@@ -1,6 +1,7 @@
 package com.example.RoomBooking.Repository;
 
 import com.example.RoomBooking.Entity.Classes;
+import com.example.RoomBooking.Entity.FacultyAdvisor;
 import com.example.RoomBooking.Entity.Rooms;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,5 +14,6 @@ public interface ClassRepo extends JpaRepository<Classes,Integer>
 {
     public List<Classes> findAllByClassId(Integer ClassId);
     public Optional<Classes> findByClassId(Integer ClassId);
+    public List<Classes> findByFacultyAdvisor(FacultyAdvisor facultyAdvisor);
 
 }

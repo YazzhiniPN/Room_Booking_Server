@@ -132,6 +132,25 @@ public class BookingsService
         for (Rooms room : roomsList) {
             if (!bookingsRepo.existsByRoomAndFacultyAdvisorIsNotNull(room)) {
                 filteredRooms.add(room);
+            }else{
+                List<Bookings> bookings = bookingsRepo.findByRoomAndFacultyAdvisorIsNotNull(room);
+                if(!bookings.isEmpty()){
+                    for(Bookings book: bookings){
+                        FacultyAdvisor facultyAdvisor = book.getFacultyAdvisor();
+                        List<Classes> classes = classRepo.findByFacultyAdvisor(facultyAdvisor);
+                        Classes currentClass = classes.get(0);
+                        if (
+                                currentClass.isAssess() &&
+                                        (
+                                                (date.isBefore(currentClass.getToDate()) && date.isAfter(currentClass.getFromDate())) ||
+                                                        date.isEqual(currentClass.getFromDate()) ||
+                                                        date.isEqual(currentClass.getToDate())
+                                        )
+                        ) {
+                            filteredRooms.add(room);
+                        }
+                    }
+                }
             }
         }
         roomsList = filteredRooms;
