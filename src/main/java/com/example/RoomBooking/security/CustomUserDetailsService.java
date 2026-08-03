@@ -1,6 +1,7 @@
 package com.example.RoomBooking.security;
 
 import com.example.RoomBooking.Entity.Representative;
+import com.example.RoomBooking.Repository.AdminRepo;
 import com.example.RoomBooking.Repository.FacultyAdvisorRepo;
 import com.example.RoomBooking.Repository.RepRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,30 +20,35 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private RepRepo repRepo;
 
+    @Autowired
+    private AdminRepo adminRepo;
+
     @Override
     public UserDetails loadUserByUsername(String username) {
-        // check faculty first
-        return facultyRepo.findByUserId(username)
-                .map(f -> User.builder()
-                        .username(f.getUsername())
-                        .password(f.getPassword())
-                        .roles("FACULTY_ADVISOR")
-                        .build())
-                .orElseGet(() ->{
-                    Representative rep = repRepo.findByUserId(username).orElseThrow(() -> new EntityNotFoundException("Representative not found"));
+        // 1. Check admin first
+        var adminOpt = adminRepo.findByUsername(username);
+        if (adminOpt.isPresent()) {
+            return adminOpt.get(); // Admin entity itself implements UserDetails
+        }
 
-                    if(rep.isDeleted()){
-                        throw new EntityNotFoundException("Rep has been deleted");
-                    }
+        // 2. Check faculty
+        var facultyOpt = facultyRepo.findByUserId(username);
+        if (facultyOpt.isPresent()) {
+            return facultyOpt.get(); // FacultyAdvisor entity implements UserDetails
+        }
 
-                    UserDetails user = User.builder()
-                            .username(rep.getUserId())
-                            .password(rep.getPassword())
-                            .roles("REPRESENTATIVE")
-                            .build();
-                    return user;
-                }
+        // 3. Check representative
+        Representative rep = repRepo.findByUserId(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
 
-                );
+        if (rep.isDeleted()) {
+            throw new EntityNotFoundException("This representative account has been deactivated.");
+        }
+
+        return User.builder()
+                .username(rep.getUserId())
+                .password(rep.getPassword())
+                .roles("REPRESENTATIVE")
+                .build();
     }
 }

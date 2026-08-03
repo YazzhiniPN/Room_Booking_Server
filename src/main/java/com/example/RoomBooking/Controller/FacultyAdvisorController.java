@@ -8,7 +8,7 @@ import com.example.RoomBooking.Service.FacultyAdvisorService;
 import com.example.RoomBooking.payload.FacultyAdvisorDTO;
 import com.example.RoomBooking.payload.RepDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -53,7 +53,7 @@ public class FacultyAdvisorController
 
     //public Bookings bookClassroom(@RequestBody String userId, @RequestBody)*/
     @PostMapping("/rep")
-    public Representative addRep(@AuthenticationPrincipal User user, @RequestBody RepDetails repDetails)
+    public Representative addRep(@AuthenticationPrincipal UserDetails user, @RequestBody RepDetails repDetails)
     {
         System.out.println(user);
         return this.facultyAdvisor.addRep(user.getUsername(),repDetails);
@@ -65,7 +65,7 @@ public class FacultyAdvisorController
     }
 
     @GetMapping("/token")
-    public FacultyAdvisorDTO getFacultyAdvisor(@AuthenticationPrincipal User user){
+    public FacultyAdvisorDTO getFacultyAdvisor(@AuthenticationPrincipal UserDetails user){
         return this.facultyAdvisor.getFacultyAdvisor(user.getUsername());
     }
 

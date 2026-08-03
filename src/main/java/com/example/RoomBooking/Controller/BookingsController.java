@@ -5,7 +5,7 @@ import com.example.RoomBooking.Entity.Rooms;
 import com.example.RoomBooking.payload.*;
 import com.example.RoomBooking.Service.BookingsService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class BookingsController
 
 
     @GetMapping("/token")
-    public String checkTypeOfUser(@AuthenticationPrincipal User user){
+    public String checkTypeOfUser(@AuthenticationPrincipal UserDetails user){
         if (user == null || user.getAuthorities() == null) {
             return "Unauthorized";
         }
@@ -50,9 +50,9 @@ public class BookingsController
         return this.bookingsService.getBookings(classId);
     }
     @DeleteMapping("/rep/{bookingId}")
-    public String deleteBooking(@PathVariable Integer bookingId)
+    public String deleteBooking(@PathVariable Integer bookingId, @AuthenticationPrincipal UserDetails user)
     {
-        return this.bookingsService.deleteBooking(bookingId);
+        return this.bookingsService.deleteBooking(bookingId, user.getUsername());
     }
     @PostMapping("/rep")
     public Bookings addBookingRep(@RequestBody BookingRequest bookingRequest)
@@ -66,7 +66,7 @@ public class BookingsController
     }
 
     @GetMapping("/faculty")
-    public List<BookingClassRoomInfo> getBookingClassRoomInfo(@AuthenticationPrincipal User user){
+    public List<BookingClassRoomInfo> getBookingClassRoomInfo(@AuthenticationPrincipal UserDetails user){
         return this.bookingsService.getBookingClassRoomInfo(user.getUsername());
     }
 
@@ -81,18 +81,18 @@ public class BookingsController
         return this.bookingsService.permanentRooms(building);
     }
     @DeleteMapping("/faculty/{bookingId}")
-    public String deleteBookingFaculty(@PathVariable Integer bookingId,@AuthenticationPrincipal User user)
+    public String deleteBookingFaculty(@PathVariable Integer bookingId,@AuthenticationPrincipal UserDetails user)
     {
         return this.bookingsService.deleteBookingFaculty(bookingId,user.getUsername());
     }
     @PostMapping("/faculty/assess")
-    public String addAssessPeriod(@RequestBody AssessPeriodsRequest assessPeriodsRequest,@AuthenticationPrincipal User user)
+    public String addAssessPeriod(@RequestBody AssessPeriodsRequest assessPeriodsRequest,@AuthenticationPrincipal UserDetails user)
     {
         this.bookingsService.addAssessPeriod(assessPeriodsRequest,user.getUsername());
         return "Assess period added";
     }
     @DeleteMapping("/faculty/assess")
-    public String deleteAssessPeriod(@AuthenticationPrincipal User user)
+    public String deleteAssessPeriod(@AuthenticationPrincipal UserDetails user)
     {
         this.bookingsService.deleteAssessPeriod(user.getUsername());
         return "Assess period removed";

@@ -6,18 +6,10 @@ import com.example.RoomBooking.payload.*;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.awt.print.Book;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,24 +67,76 @@ public class BookingsService
         }).toList();
         return bookingsReturn;
     }
-    public String deleteBooking(Integer bookingId)
+    public String deleteBooking(Integer bookingId, String repUserId)
     {
-        Bookings booking=this.bookingsRepo.findById(bookingId).orElseThrow(()->new EntityNotFoundException("No bookings found with the id "+bookingId));
+        Bookings booking = this.bookingsRepo.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("No bookings found with the id " + bookingId));
+
+        // Ownership check: verify the rep belongs to the same class as the booking
+        Representative rep = repRepo.findByUserId(repUserId)
+                .orElseThrow(() -> new EntityNotFoundException("Representative not found"));
+
+        boolean classMatches = booking.getClasses().stream()
+                .anyMatch(c -> c.getClassId().equals(rep.getClasses().getClassId()));
+
+        if (!classMatches) {
+            throw new SecurityException("You are not authorized to delete this booking.");
+        }
+
         bookingsRepo.delete(booking);
-        return ("Booking with id "+bookingId+" has been deleted successfully");
+        return ("Booking with id " + bookingId + " has been deleted successfully");
     }
+    @Transactional
     public Bookings addBookingRep(BookingRequest bookingRequest)
     {
-        LocalDate bookingDate=bookingRequest.getDate();
-        Set<Integer> periods=bookingRequest.getPeriods();
-        Rooms roomId = this.roomDatabaseRepo.findById(bookingRequest.getRoomId())
+        LocalDate bookingDate = bookingRequest.getDate();
+        Set<Integer> periods = bookingRequest.getPeriods();
+
+        // Acquire a pessimistic write lock on the room row to serialize concurrent requests
+        Rooms room = this.roomDatabaseRepo.findByIdWithLock(bookingRequest.getRoomId())
                 .orElseThrow(() -> new EntityNotFoundException("Room not found"));
 
-        List<Classes> classesList = this.classRepo.findAllById(bookingRequest.getClassIds());
+        // Re-check for conflicts AFTER acquiring the lock (prevents race conditions)
+        List<Bookings> overlappingBookings = bookingsRepo.findOverlappingBookingsForRoom(bookingRequest.getRoomId(), bookingDate, periods);
 
-        Representative rep=repRepo.findByUserId(bookingRequest.getRepUserId()).orElseThrow(()->new EntityNotFoundException("Representative not found"));
+        for (Bookings b : overlappingBookings) {
+            if (b.getFacultyAdvisor() != null) {
+                // Room is permanently booked by a faculty advisor. 
+                // We MUST verify they are in an active assessment period that covers this exact date and periods.
+                Classes facultyClass = b.getFacultyAdvisor().getClasses();
+                if (facultyClass == null || !facultyClass.isAssess() || facultyClass.getPeriods() == null) {
+                    throw new IllegalStateException("Room is permanently booked by a faculty advisor and is not currently released for assessment.");
+                }
+                
+                boolean dateInRange = !bookingDate.isBefore(facultyClass.getFromDate()) && !bookingDate.isAfter(facultyClass.getToDate());
+                boolean periodsMatch = facultyClass.getPeriods().containsAll(periods);
+                
+                if (!dateInRange || !periodsMatch) {
+                    throw new IllegalStateException("Room is permanently booked by a faculty advisor. The assessment release period does not match your requested date or periods.");
+                }
+            }
+        }
+
+        // Backend capacity enforcement
+        int alreadyBookedCapacity = overlappingBookings.stream()
+                .filter(b -> b.getFacultyAdvisor() == null)
+                .mapToInt(Bookings::getCapacity)
+                .sum();
+
+        int availableCapacity = room.getCapacity() - alreadyBookedCapacity;
+        if (bookingRequest.getCapacity() > availableCapacity) {
+            throw new IllegalStateException(
+                "Requested capacity (" + bookingRequest.getCapacity() +
+                ") exceeds available room capacity (" + availableCapacity + ")."
+            );
+        }
+
+        List<Classes> classesList = this.classRepo.findAllById(bookingRequest.getClassIds());
+        Representative rep = repRepo.findByUserId(bookingRequest.getRepUserId())
+                .orElseThrow(() -> new EntityNotFoundException("Representative not found"));
+
         Bookings booking = new Bookings();
-        booking.setRoom(roomId);
+        booking.setRoom(room);
         booking.setDate(bookingDate);
         booking.setClasses(classesList);
         booking.setCapacity(bookingRequest.getCapacity());
@@ -125,100 +169,57 @@ public class BookingsService
     }
     public List<Rooms> availableRooms(AvailabityRequest availabityRequest)
     {
-        LocalDate date=availabityRequest.getDate();
-        String buildingName=availabityRequest.getBuildingName();
-        Set<Integer> requestPeriods=availabityRequest.getPeriods();
-        List<Rooms> roomsList=this.roomDatabaseRepo.findByBuildingName(buildingName);
-        List<Rooms> filteredRooms = new ArrayList<>();
-        for(Rooms room: roomsList){
-            List<Bookings> list = bookingsRepo.findByRoom(room);
-            boolean allRep = true;
-            for(Bookings book: list){
-                if(book.getFacultyAdvisor() != null) allRep = false;
-            }
-            if(allRep){
-                filteredRooms.add(room);
-            }else{
-                boolean isAvailable = false;
-                for(Bookings book: list){
-                    if(book.getFacultyAdvisor() != null){
-                        FacultyAdvisor facultyAdvisor = book.getFacultyAdvisor();
-                        List<Classes> classes = classRepo.findByFacultyAdvisor(facultyAdvisor);
-                        Classes currentClass = classes.get(0);
-                        boolean containsPeriod = true;
-                        for(Integer period : requestPeriods){
-                            if(!currentClass.getPeriods().contains(period)) containsPeriod = false;
-                        }
-                        if (
-                                currentClass.isAssess() &&
-                                        (
-                                                (date.isBefore(currentClass.getToDate()) && date.isAfter(currentClass.getFromDate())) ||
-                                                        date.isEqual(currentClass.getFromDate()) ||
-                                                        date.isEqual(currentClass.getToDate())
-                                        ) && containsPeriod
-                        ) {
-                                isAvailable = true;
-                        }
-                    }
+        LocalDate date = availabityRequest.getDate();
+        String buildingName = availabityRequest.getBuildingName();
+        Set<Integer> requestPeriods = availabityRequest.getPeriods();
+
+        // Query 1: fetch all rooms in the building
+        List<Rooms> allRooms = this.roomDatabaseRepo.findByBuildingName(buildingName);
+
+        // Query 2: fetch ALL relevant bookings for this building/date/periods in ONE query (eliminates N+1)
+        List<Bookings> relevantBookings = bookingsRepo
+                .findBookingsForBuildingAndDateAndPeriods(buildingName, date, requestPeriods);
+
+        // Group bookings by roomId for O(1) lookup — avoids any further DB calls
+        Map<Integer, List<Bookings>> bookingsByRoom = relevantBookings.stream()
+                .collect(Collectors.groupingBy(b -> b.getRoom().getRoomId()));
+
+        List<Rooms> result = new ArrayList<>();
+
+        for (Rooms room : allRooms) {
+            List<Bookings> roomBookings = bookingsByRoom.getOrDefault(room.getRoomId(), List.of());
+
+            boolean hasFacultyBooking = roomBookings.stream()
+                    .anyMatch(b -> b.getFacultyAdvisor() != null);
+
+            if (!hasFacultyBooking) {
+                // No permanent faculty assignment — room is available for ad-hoc booking
+                room.setBookings(new ArrayList<>(roomBookings));
+                result.add(room);
+            } else {
+                // Room has a permanent faculty booking — check if it's released via assessment period
+                boolean releasedByAssessment = roomBookings.stream()
+                        .filter(b -> b.getFacultyAdvisor() != null)
+                        .anyMatch(b -> {
+                            Classes cls = b.getFacultyAdvisor().getClasses();
+                            if (cls == null || !cls.isAssess() || cls.getPeriods() == null) return false;
+                            boolean dateInRange = !date.isBefore(cls.getFromDate()) && !date.isAfter(cls.getToDate());
+                            boolean periodsMatch = cls.getPeriods().containsAll(requestPeriods);
+                            return dateInRange && periodsMatch;
+                        });
+
+                if (releasedByAssessment) {
+                    // Only expose rep bookings (not the faculty permanent booking) to the frontend
+                    List<Bookings> repBookingsOnly = roomBookings.stream()
+                            .filter(b -> b.getFacultyAdvisor() == null)
+                            .collect(Collectors.toList());
+                    room.setBookings(repBookingsOnly);
+                    result.add(room);
                 }
-                if(isAvailable) filteredRooms.add(room);
             }
         }
 
-        roomsList = filteredRooms;
-//        for (Rooms room : roomsList) {
-//            List<Bookings> list = bookingsRepo.findByRoom(room);
-//            System.out.println(list);
-//            if (!bookingsRepo.existsByRoomAndFacultyAdvisorIsNotNull(room)) {
-//                filteredRooms.add(room);
-//            }else{
-//                List<Bookings> bookings = bookingsRepo.findByRoomAndFacultyAdvisorIsNotNull(room);
-//                System.out.println(bookings);
-//                if(!bookings.isEmpty()){
-//                    for(Bookings book: bookings){
-//                        FacultyAdvisor facultyAdvisor = book.getFacultyAdvisor();
-//                        List<Classes> classes = classRepo.findByFacultyAdvisor(facultyAdvisor);
-//                        Classes currentClass = classes.get(0);
-//                        System.out.println(currentClass);
-//                        if (
-//                                currentClass.isAssess() &&
-//                                        (
-//                                                (date.isBefore(currentClass.getToDate()) && date.isAfter(currentClass.getFromDate())) ||
-//                                                        date.isEqual(currentClass.getFromDate()) ||
-//                                                        date.isEqual(currentClass.getToDate())
-//                                        ) && currentClass.getPeriods().contains(requestPeriods)
-//                        ) {
-//                            filteredRooms.add(room);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        roomsList = filteredRooms;
-        for(Rooms room: roomsList)
-        {
-            List<Bookings> bookingsList=bookingsRepo.findByRoomAndDate(room,date);
-            List<Bookings> roombookings=new ArrayList<>();
-            for (Bookings booking:bookingsList)
-            {
-//                if(booking.getFacultyAdvisor() != null) {
-//                    continue;
-//                }
-                Set<Integer> bookingPeriods=booking.getPeriods();
-                for(Integer period: bookingPeriods)
-                {
-                    if(requestPeriods.contains(period))
-                    {
-                        roombookings.add(booking);
-                        break;
-                    }
-                }
-            }
-
-            room.setBookings(roombookings);
-        }
-
-        return roomsList;
+        return result;
     }
 
     public List<RoomDetailsPermanent> permanentRooms(String buildingName)

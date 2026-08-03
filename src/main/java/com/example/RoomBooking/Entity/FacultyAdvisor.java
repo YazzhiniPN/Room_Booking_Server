@@ -74,7 +74,7 @@ public class FacultyAdvisor implements UserDetails
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority("ROLE_FACULTY_ADVISOR"));
     }
 
     public String getPassword() {

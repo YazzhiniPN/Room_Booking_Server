@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface ClassRepo extends JpaRepository<Classes,Integer>
+public interface ClassRepo extends JpaRepository<Classes, Integer>
 {
-    public List<Classes> findAllByClassId(Integer ClassId);
-    public Optional<Classes> findByClassId(Integer ClassId);
-    public List<Classes> findByFacultyAdvisor(FacultyAdvisor facultyAdvisor);
+    List<Classes> findAllByClassId(Integer classId);
+    Optional<Classes> findByClassId(Integer classId);
+    List<Classes> findByFacultyAdvisor(FacultyAdvisor facultyAdvisor);
 
+    // Used by nightly CRON to auto-expire assessment periods past their toDate
+    List<Classes> findByIsAssessTrueAndToDateBefore(LocalDate date);
 }

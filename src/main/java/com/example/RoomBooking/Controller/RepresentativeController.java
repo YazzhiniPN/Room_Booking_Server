@@ -5,7 +5,7 @@ import com.example.RoomBooking.Service.RepresentativeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +32,7 @@ public class RepresentativeController
         return this.repService.updateRepName(id, name);
     }
    @GetMapping("/token")
-    public Representative getRepDetails(@AuthenticationPrincipal User user)
+    public Representative getRepDetails(@AuthenticationPrincipal UserDetails user)
     {
         return this.repService.getRepDetails(user.getUsername());
     }
